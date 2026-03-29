@@ -1,0 +1,569 @@
+/**
+ * Example of improved App.tsx using separated data structure
+ * This shows how to integrate the new data organization
+ */
+
+import { useEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowRight, ArrowDown, Mail, MapPin, Calendar, Instagram, X, Sparkles } from 'lucide-react';
+import './App.css';
+
+// Import separated data and types
+import { artists, getTotalArtworkCount } from './data/artists';
+import { Artist, Artwork } from './types/artists';
+import { validateArtists } from './utils/validation';
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Event data (could also be moved to separate file)
+const upcomingEvent = {
+  title: "Studio Nouveau's Spring Showcase",
+  date: 'May 7th at 4 PM',
+  time: '4:00 PM - 8:00 PM',
+  location: 'Studio Nouveau, Baton Rouge',
+  description: 'Join us for our biggest event of the season! Meet the artists, view new original works, and enjoy light refreshments. Special discounts available during the event.',
+};
+
+function App() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [showEventPopup, setShowEventPopup] = useState(true);
+  const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
+
+  // Validate data in development
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      const validation = validateArtists(artists);
+      if (!validation.isValid) {
+        console.error('Artist data validation failed:', validation.errors);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const popupTimer = setTimeout(() => {
+      setShowEventPopup(true);
+    }, 1500);
+
+    const ctx = gsap.context(() => {
+      // Hero entrance animation
+      const heroTl = gsap.timeline();
+      heroTl
+        .fromTo('.hero-bg', 
+          { opacity: 0, scale: 1.08 }, 
+          { opacity: 1, scale: 1, duration: 1.1, ease: 'power2.out' }
+        )
+        .fromTo('.hero-label', 
+          { opacity: 0, y: 12 }, 
+          { opacity: 1, y: 0, duration: 0.6 }, 
+          0.15
+        )
+        .fromTo('.hero-headline span', 
+          { opacity: 0, y: 40 }, 
+          { opacity: 1, y: 0, duration: 0.9, stagger: 0.06, ease: 'power3.out' }, 
+          0.25
+        )
+        .fromTo('.hero-subheadline', 
+          { opacity: 0, y: 18 }, 
+          { opacity: 1, y: 0, duration: 0.6 }, 
+          0.45
+        )
+        .fromTo('.hero-cta', 
+          { opacity: 0, x: -20 }, 
+          { opacity: 1, x: 0, duration: 0.6 }, 
+          0.65
+        )
+        .fromTo('.scroll-hint-container', 
+          { opacity: 0, y: 10 }, 
+          { opacity: 1, y: 0, duration: 0.6 }, 
+          1.0
+        );
+
+      // Hero scroll animation
+      const heroScrollTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: '+=130%',
+          pin: true,
+          scrub: 0.6,
+          onLeave: () => gsap.set('.scroll-hint-container', { opacity: 0 }),
+          onEnterBack: () => gsap.set('.scroll-hint-container', { opacity: 1 }),
+        }
+      });
+
+      heroScrollTl
+        .fromTo('.hero-headline', 
+          { x: 0, opacity: 1 }, 
+          { x: '-18vw', opacity: 0, ease: 'power2.in' }, 
+          0.7
+        )
+        .fromTo('.hero-subheadline', 
+          { y: 0, opacity: 1 }, 
+          { y: '10vh', opacity: 0, ease: 'power2.in' }, 
+          0.7
+        )
+        .fromTo('.hero-cta', 
+          { y: 0, opacity: 1 }, 
+          { y: '10vh', opacity: 0, ease: 'power2.in' }, 
+          0.75
+        )
+        .fromTo('.hero-bg', 
+          { scale: 1, x: 0 }, 
+          { scale: 1.06, x: '-2vw', ease: 'power2.in' }, 
+          0.7
+        );
+
+      if (heroScrollTl.scrollTrigger) {
+        scrollTriggersRef.current.push(heroScrollTl.scrollTrigger);
+      }
+
+      // Artist section animations
+      artists.forEach((_, artistIndex) => {
+        const artistSection = document.querySelector(`#artist-${artistIndex}`);
+        if (artistSection) {
+          const artworks = gsap.utils.toArray<HTMLElement>(`#artist-${artistIndex} .artwork-card`);
+          artworks.forEach((artwork) => {
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: artwork,
+                start: 'top 85%',
+                end: 'top 50%',
+                scrub: 0.4,
+              }
+            });
+            tl.fromTo(artwork, 
+              { y: 50, opacity: 0 }, 
+              { y: 0, opacity: 1, ease: 'power2.out' }
+            );
+            if (tl.scrollTrigger) {
+              scrollTriggersRef.current.push(tl.scrollTrigger);
+            }
+          });
+        }
+      });
+
+      // About section animation
+      const aboutTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.about-section',
+          start: 'top 80%',
+          end: 'top 40%',
+          scrub: 0.4,
+        }
+      });
+      aboutTl
+        .fromTo('.about-image', 
+          { x: -60, opacity: 0 }, 
+          { x: 0, opacity: 1, ease: 'power2.out' }
+        )
+        .fromTo('.about-content', 
+          { x: 60, opacity: 0 }, 
+          { x: 0, opacity: 1, ease: 'power2.out' }, 
+          0.1
+        );
+      if (aboutTl.scrollTrigger) {
+        scrollTriggersRef.current.push(aboutTl.scrollTrigger);
+      }
+
+      // Contact section animation
+      const contactTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.contact-section',
+          start: 'top 80%',
+          end: 'top 50%',
+          scrub: 0.4,
+        }
+      });
+      contactTl
+        .fromTo('.contact-info', 
+          { y: 40, opacity: 0 }, 
+          { y: 0, opacity: 1, ease: 'power2.out' }
+        )
+        .fromTo('.contact-form', 
+          { y: 40, opacity: 0 }, 
+          { y: 0, opacity: 1, ease: 'power2.out' }, 
+          0.1
+        );
+      if (contactTl.scrollTrigger) {
+        scrollTriggersRef.current.push(contactTl.scrollTrigger);
+      }
+
+    });
+
+    return () => {
+      clearTimeout(popupTimer);
+      scrollTriggersRef.current.forEach(st => st.kill());
+      scrollTriggersRef.current = [];
+      ctx.revert();
+    };
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Type-safe price formatting
+  const formatPrice = (price: number): string => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+
+  // Helper to render artwork card with proper typing
+  const renderArtworkCard = (artwork: Artwork, idx: number): JSX.Element => (
+    <div 
+      key={artwork.id} 
+      className={`artwork-card ${idx === 0 || idx === 5 ? 'featured' : ''}`}
+    >
+      <div className="artwork-frame">
+        <img 
+          src={artwork.image} 
+          alt={artwork.title}
+          className="artwork-image"
+          loading="lazy" // Performance optimization
+        />
+        
+        {/* Price Tag */}
+        <div className="price-tag">
+          <span className="price">{formatPrice(artwork.price)}</span>
+        </div>
+        
+        {/* Hover Overlay */}
+        <div className="artwork-overlay">
+          <div className="overlay-content">
+            <h3 className="artwork-title">{artwork.title}</h3>
+            <p className="artwork-details">{artwork.medium} • {artwork.size}</p>
+            <button className="inquire-btn">Inquire</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Helper to render artist section with proper typing
+  const renderArtistSection = (artist: Artist, artistIndex: number): JSX.Element => (
+    <section 
+      key={artist.name} 
+      id={`artist-${artistIndex}`}
+      className="artist-gallery-section"
+    >
+      {/* Artist Header with Full Width Background */}
+      <div className="artist-header-bg">
+        <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-16 md:py-24">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            <div>
+              <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75">
+                {artist.specialty.toUpperCase()}
+              </div>
+              <h2 className="font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-tight text-studio-white">
+                {artist.name.toUpperCase()}
+              </h2>
+            </div>
+            <p className="max-w-md text-studio-gray leading-relaxed lg:text-right">
+              {artist.bio}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Gallery Grid - Modern Museum Style */}
+      <div className="gallery-container">
+        <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-12 md:py-16">
+          <div className="gallery-grid">
+            {artist.artworks.map((artwork, idx) => renderArtworkCard(artwork, idx))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  return (
+    <div className="relative">
+      {/* Grain overlay */}
+      <div className="grain-overlay" />
+
+      {/* Event Popup */}
+      {showEventPopup && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-studio-cream max-w-lg w-full relative animate-fade-in">
+            <button 
+              onClick={() => setShowEventPopup(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-studio-black text-studio-white hover:bg-studio-gold transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            
+            <div className="p-8 md:p-10">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="w-5 h-5 text-studio-gold" />
+                <span className="font-mono text-xs tracking-[0.2em] text-studio-gold">UPCOMING EVENT</span>
+              </div>
+              
+              <h2 className="font-display font-black text-3xl md:text-4xl text-studio-black mb-4">
+                {upcomingEvent.title}
+              </h2>
+              
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-3 text-studio-black/80">
+                  <Calendar className="w-4 h-4 text-studio-gold" />
+                  <span className="text-sm">{upcomingEvent.date}</span>
+                </div>
+                <div className="flex items-center gap-3 text-studio-black/80">
+                  <MapPin className="w-4 h-4 text-studio-gold" />
+                  <span className="text-sm">{upcomingEvent.location}</span>
+                </div>
+              </div>
+              
+              <p className="text-studio-black/70 leading-relaxed mb-8">
+                {upcomingEvent.description}
+              </p>
+              
+              <button 
+                onClick={() => {
+                  setShowEventPopup(false);
+                  scrollToSection('contact');
+                }}
+                className="w-full bg-studio-black text-studio-white py-4 font-display font-semibold tracking-wide hover:bg-studio-gold hover:text-studio-black transition-colors duration-300"
+              >
+                RSVP NOW
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center bg-gradient-to-b from-studio-black/80 to-transparent">
+        <div className="font-display font-bold text-lg tracking-tight text-studio-white">
+          Studio Nouveau
+        </div>
+        <div className="hidden md:flex items-center gap-8">
+          <button onClick={() => scrollToSection('artists')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+            Artists
+          </button>
+          <button onClick={() => scrollToSection('about')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+            About
+          </button>
+          <button onClick={() => scrollToSection('contact')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+            Contact
+          </button>
+        </div>
+      </nav>
+
+      {/* Section 1: Hero */}
+      <section ref={heroRef} className="section-pinned z-10">
+        <div className="hero-bg absolute inset-0">
+          <img 
+            src="/images/studio-exterior.jpg" 
+            alt="Studio Nouveau" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-studio-black/80 via-studio-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-studio-black/60 via-transparent to-studio-black/30" />
+        </div>
+        
+        <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-14 lg:px-20">
+          <div className="max-w-3xl">
+            <div className="hero-label font-mono text-xs tracking-[0.2em] text-studio-gold mb-4 opacity-75">
+              ART STUDIO
+            </div>
+            <div className="hairline w-24 mb-8" />
+            
+            <h1 className="hero-headline font-display font-black text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight text-studio-white mb-6">
+              <span className="block">ART THAT</span>
+              <span className="block">MOVES</span>
+              <span className="block">PEOPLE</span>
+            </h1>
+            
+            <p className="hero-subheadline text-base md:text-lg text-studio-gray max-w-md mb-10 leading-relaxed">
+              Three artists. One vision. Original paintings and creative works crafted with passion and precision.
+            </p>
+            
+            <button 
+              onClick={() => scrollToSection('artists')}
+              className="hero-cta cta-link group"
+            >
+              <span>Explore work</span>
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+        
+        <div className="scroll-hint-container absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <span className="font-mono text-xs tracking-widest text-studio-gray">SCROLL</span>
+          <ArrowDown className="w-4 h-4 text-studio-gold scroll-hint" />
+        </div>
+      </section>
+
+      {/* Artist Sections */}
+      <div id="artists" className="relative z-20">
+        {artists.map((artist, artistIndex) => renderArtistSection(artist, artistIndex))}
+      </div>
+
+      {/* Section: About / Studio */}
+      <section id="about" className="about-section relative z-30 bg-studio-black py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div className="about-image">
+              <div className="relative">
+                <img 
+                  src="/images/studio-exterior.jpg" 
+                  alt="Studio Nouveau Exterior" 
+                  className="w-full aspect-[4/5] object-cover"
+                />
+                <div className="absolute -bottom-6 -right-6 w-32 h-32 border border-studio-gold/30" />
+                <div className="absolute -top-6 -left-6 w-32 h-32 border border-studio-gold/30" />
+              </div>
+            </div>
+            
+            <div className="about-content">
+              <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75">
+                ABOUT THE STUDIO
+              </div>
+              <h2 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-tight text-studio-white mb-8">
+                WHERE CREATIVITY<br />COMES ALIVE
+              </h2>
+              
+              <div className="space-y-6 text-studio-gray leading-relaxed">
+                <p>
+                  Studio Nouveau is a collective of three talented artists based in Baton Rouge, Louisiana. 
+                  Founded on the belief that art should inspire and transform, our studio has become 
+                  a haven for creative expression.
+                </p>
+                <p>
+                  From abstract expressionism to wildlife paintings, each piece 
+                  that leaves our studio carries a piece of our passion. We work in various mediums 
+                  including acrylics, oils, pastels, and mixed media.
+                </p>
+                <p>
+                  Whether you're looking for a statement piece for your home or a unique gift, 
+                  our diverse collection offers something for every art lover.
+                </p>
+              </div>
+              
+              <div className="flex flex-wrap gap-8 mt-10 pt-10 border-t border-studio-white/10">
+                <div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">3</div>
+                  <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">ARTISTS</div>
+                </div>
+                <div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">
+                    {getTotalArtworkCount()}+
+                  </div>
+                  <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">ARTWORKS</div>
+                </div>
+                <div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">10+</div>
+                  <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">YEARS</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section: Contact */}
+      <section id="contact" className="contact-section relative z-40 bg-studio-cream py-24 md:py-32 px-6 md:px-14 lg:px-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+            <div className="contact-info">
+              <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75">
+                GET IN TOUCH
+              </div>
+              <h2 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-tight text-studio-black mb-8">
+                LET'S CREATE<br />TOGETHER
+              </h2>
+              
+              <p className="text-studio-black/70 leading-relaxed mb-10 max-w-md">
+                Interested in commissioning a piece or purchasing original artwork? 
+                We'd love to hear from you. Reach out and let's discuss your vision.
+              </p>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <Mail className="w-5 h-5 text-studio-gold" />
+                  <span className="text-studio-black">hello@studionoveau.com</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-studio-gold" />
+                  <span className="text-studio-black">Baton Rouge, Louisiana</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Instagram className="w-5 h-5 text-studio-gold" />
+                  <span className="text-studio-black">@studionoveau</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="contact-form">
+              <form className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-studio-black mb-2">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="w-full px-4 py-3 bg-white border border-studio-black/10 focus:border-studio-gold focus:outline-none transition-colors"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-studio-black mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="w-full px-4 py-3 bg-white border border-studio-black/10 focus:border-studio-gold focus:outline-none transition-colors"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-studio-black mb-2">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={5}
+                    className="w-full px-4 py-3 bg-white border border-studio-black/10 focus:border-studio-gold focus:outline-none transition-colors resize-none"
+                    required
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  className="w-full bg-studio-black text-studio-white py-4 font-display font-semibold tracking-wide hover:bg-studio-gold hover:text-studio-black transition-colors duration-300"
+                >
+                  SEND MESSAGE
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-studio-black py-8 px-6 md:px-14 lg:px-20">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="font-display font-bold text-lg tracking-tight text-studio-white">
+            Studio Nouveau
+          </div>
+          <div className="text-studio-gray text-sm">
+            © {new Date().getFullYear()} Studio Nouveau. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;
