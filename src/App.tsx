@@ -54,9 +54,9 @@ const artists = [
 
 // Event data
 const upcomingEvent = {
-  title: 'Spring Art Showcase',
-  date: 'April 5-7, 2025',
-  time: '10:00 AM - 6:00 PM',
+  title: "Studio Nouveau's Spring Showcase",
+  date: 'May 7th at 4 PM',
+  time: '4:00 PM - 8:00 PM',
   location: 'Studio Nouveau, Baton Rouge',
   description: 'Join us for our biggest event of the season! Meet the artists, view new original works, and enjoy light refreshments. Special discounts available during the event.',
 };
