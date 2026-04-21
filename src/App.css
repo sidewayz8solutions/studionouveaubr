@@ -17,19 +17,19 @@ section {
 }
 
 .artist-header-bg-debbie {
-  background: linear-gradient(135deg, #E8D5D0 0%, #F0E4E0 50%, #E8D5D0 100%);
+  background: linear-gradient(135deg, #FAF3F1 0%, #FDF8F6 50%, #FAF3F1 100%);
 }
 
 .artist-header-bg-betty {
-  background: linear-gradient(135deg, #DED8E8 0%, #E8E4F0 50%, #DED8E8 100%);
+  background: linear-gradient(135deg, #F3F1F7 0%, #F9F8FB 50%, #F3F1F7 100%);
 }
 
 .artist-header-bg-tonni {
-  background: linear-gradient(135deg, #D0D8D0 0%, #E2E8E0 50%, #D0D8D0 100%);
+  background: linear-gradient(135deg, #EEF1EE 0%, #F6F8F6 50%, #EEF1EE 100%);
 }
 
 .artist-header-bg-guest {
-  background: linear-gradient(135deg, #F0EBE0 0%, #FAF7F2 50%, #F0EBE0 100%);
+  background: linear-gradient(135deg, #F5F2ED 0%, #FAF7F2 50%, #F5F2ED 100%);
 }
 
 .artist-header-bg::before {
@@ -44,7 +44,7 @@ section {
 }
 
 .gallery-container {
-  background: #FAF7F2;
+  background: #FDFCFB;
   position: relative;
 }
 
@@ -125,9 +125,9 @@ section {
 
 .price {
   font-family: 'Inter', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.875rem;
-  color: #3D3D3D;
+  color: #1A1A1A;
   letter-spacing: -0.02em;
 }
 
@@ -159,26 +159,27 @@ section {
 
 .artwork-title {
   font-family: 'Playfair Display', serif;
-  font-weight: 600;
-  font-size: 1.125rem;
+  font-weight: 700;
+  font-size: 1.25rem;
   color: white;
   margin-bottom: 0.25rem;
 }
 
 .artwork-details {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.95);
   margin-bottom: 1rem;
   letter-spacing: 0.02em;
 }
 
 .inquire-btn {
   background: #C4A574;
-  color: #3D3D3D;
+  color: #1A1A1A;
   font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 0.75rem;
+  font-weight: 600;
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
   padding: 0.625rem 1.5rem;
   border: none;
@@ -187,28 +188,28 @@ section {
 }
 
 .inquire-btn:hover {
-  background: #FAF7F2;
-  color: #3D3D3D;
+  background: #FFFFFF;
+  color: #1A1A1A;
   transform: scale(1.05);
 }
 
 .view-room-btn {
   background: transparent;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 0.7rem;
+  font-weight: 500;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   padding: 0.5rem 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 0.5rem;
 }
 
 .view-room-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.9);
 }
 
 button[type="submit"] {
@@ -234,6 +235,26 @@ button[type="submit"]:hover::before {
 nav {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #C4A574, transparent);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 80%;
 }
 
 @keyframes fadeIn {
@@ -391,7 +412,7 @@ nav {
   font-size: 0.8rem;
   letter-spacing: 0.03em;
   transition: all 0.2s ease;
-  color: #3D3D3D;
+  color: #1A1A1A;
 }
 
 .room-option:hover {
@@ -400,7 +421,7 @@ nav {
 
 .room-option.active {
   background: #C4A574;
-  color: #3D3D3D;
+  color: #1A1A1A;
   border-color: #C4A574;
 }
 
