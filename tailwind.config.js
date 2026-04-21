@@ -6,6 +6,7 @@ module.exports = {
     extend: {
       colors: {
         'studio': {
+          black: '#0B0B0C',
           cream: '#FAF7F2',
           blush: '#F0E4E0',
           sage: '#E2E8E0',

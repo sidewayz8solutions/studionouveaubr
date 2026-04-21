@@ -21,9 +21,15 @@ function App() {
   const [showEventPopup, setShowEventPopup] = useState(true);
   const [viewRoomArtwork, setViewRoomArtwork] = useState<{image: string; title: string; size: string} | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<'cream' | 'blush' | 'sage'>('cream');
+  const [scrolled, setScrolled] = useState(false);
   const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
 
   useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
     const popupTimer = setTimeout(() => {
       setShowEventPopup(true);
     }, 1500);
@@ -176,6 +182,7 @@ function App() {
 
     return () => {
       clearTimeout(popupTimer);
+      window.removeEventListener('scroll', handleScroll);
       scrollTriggersRef.current.forEach(st => st.kill());
       scrollTriggersRef.current = [];
       ctx.revert();
@@ -250,18 +257,18 @@ function App() {
       )}
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center bg-gradient-to-b from-studio-black/80 to-transparent">
-        <div className="font-display font-bold text-lg tracking-tight text-studio-white">
+      <nav className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-300 ${scrolled ? 'bg-studio-cream/95 backdrop-blur-md shadow-sm' : 'bg-gradient-to-b from-studio-black/80 to-transparent'}`}>
+        <div className={`font-display font-bold text-lg tracking-tight transition-colors ${scrolled ? 'text-studio-charcoal' : 'text-studio-white'}`}>
           Studio Nouveau
         </div>
         <div className="hidden md:flex items-center gap-8">
-          <button onClick={() => scrollToSection('artists')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+          <button onClick={() => scrollToSection('artists')} className={`text-sm transition-colors ${scrolled ? 'text-studio-stone hover:text-studio-charcoal' : 'text-studio-gray hover:text-studio-white'}`}>
             Artists
           </button>
-          <button onClick={() => scrollToSection('about')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+          <button onClick={() => scrollToSection('about')} className={`text-sm transition-colors ${scrolled ? 'text-studio-stone hover:text-studio-charcoal' : 'text-studio-gray hover:text-studio-white'}`}>
             About
           </button>
-          <button onClick={() => scrollToSection('contact')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+          <button onClick={() => scrollToSection('contact')} className={`text-sm transition-colors ${scrolled ? 'text-studio-stone hover:text-studio-charcoal' : 'text-studio-gray hover:text-studio-white'}`}>
             Contact
           </button>
         </div>
@@ -334,7 +341,7 @@ function App() {
                         {artist.name.toUpperCase()}
                       </h2>
                     </div>
-                    <p className="max-w-md text-studio-stone leading-relaxed lg:text-right font-body text-lg">
+                    <p className="max-w-md text-studio-charcoal/80 leading-relaxed lg:text-right font-body text-lg">
                       {artist.bio}
                     </p>
                   </div>
