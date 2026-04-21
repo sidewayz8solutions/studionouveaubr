@@ -97,6 +97,14 @@ export const artists: Artist[] = [
     artworks: [
       {
         id: 26,
+        title: 'Amber Kaleidoscope',
+        image: '/images/betty-amber-kaleidoscope.jpg',
+        price: 2550,
+        size: 'TBD',
+        medium: 'Acrylic on Canvas'
+      },
+      {
+        id: 27,
         title: 'Dreamscape',
         image: '/images/betty-dreamscape.jpg',
         price: 1200,
@@ -327,6 +335,12 @@ export const artists: Artist[] = [
         medium: 'Acrylic on Canvas'
       },
     ]
+  },
+  {
+    name: 'Guest Artist',
+    specialty: 'TBD',
+    bio: 'We are honored to feature rotating guest artists at Studio Nouveau. Please visit us in person to view their latest works and learn more about their creative journey.',
+    artworks: []
   },
 ];
 

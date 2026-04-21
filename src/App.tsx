@@ -19,6 +19,8 @@ const upcomingEvent = {
 function App() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [showEventPopup, setShowEventPopup] = useState(true);
+  const [viewRoomArtwork, setViewRoomArtwork] = useState<{image: string; title: string; size: string} | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<'cream' | 'blush' | 'sage'>('cream');
   const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
 
   useEffect(() => {
@@ -291,7 +293,7 @@ function App() {
             </h1>
             
             <p className="hero-subheadline text-base md:text-lg text-studio-gray max-w-md mb-10 leading-relaxed">
-              Three artists. One vision. Original paintings and creative works crafted with passion and precision.
+              Four artists. One vision. Original paintings and creative works crafted with passion and precision.
             </p>
             
             <button 
@@ -312,72 +314,133 @@ function App() {
 
       {/* Artist Sections */}
       <div id="artists" className="relative z-20">
-        {artists.map((artist, artistIndex) => (
-          <section 
-            key={artist.name} 
-            id={`artist-${artistIndex}`}
-            className="artist-gallery-section"
-          >
-            {/* Artist Header with Full Width Background */}
-            <div className="artist-header-bg">
-              <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-16 md:py-24">
-                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-                  <div>
-                    <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75">
-                      {artist.specialty.toUpperCase()}
+        {artists.map((artist, artistIndex) => {
+          const headerClasses = ['artist-header-bg-debbie', 'artist-header-bg-betty', 'artist-header-bg-tonni', 'artist-header-bg-guest'];
+          return (
+            <section
+              key={artist.name}
+              id={`artist-${artistIndex}`}
+              className="artist-gallery-section"
+            >
+              {/* Artist Header with Full Width Background */}
+              <div className={`artist-header-bg ${headerClasses[artistIndex] || 'artist-header-bg-guest'}`}>
+                <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-16 md:py-24">
+                  <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                    <div>
+                      <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75 uppercase">
+                        {artist.specialty}
+                      </div>
+                      <h2 className="font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-tight text-studio-charcoal">
+                        {artist.name.toUpperCase()}
+                      </h2>
                     </div>
-                    <h2 className="font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-tight text-studio-white">
-                      {artist.name.toUpperCase()}
-                    </h2>
+                    <p className="max-w-md text-studio-stone leading-relaxed lg:text-right font-body text-lg">
+                      {artist.bio}
+                    </p>
                   </div>
-                  <p className="max-w-md text-studio-gray leading-relaxed lg:text-right">
-                    {artist.bio}
-                  </p>
                 </div>
               </div>
-            </div>
 
-            {/* Gallery Grid - Modern Museum Style */}
-            <div className="gallery-container">
-              <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-12 md:py-16">
-                <div className="gallery-grid">
-                  {artist.artworks.map((artwork, idx) => (
-                    <div 
-                      key={artwork.id} 
-                      className={`artwork-card ${idx === 0 || idx === 5 ? 'featured' : ''}`}
-                    >
-                      <div className="artwork-frame">
-                        <img 
-                          src={artwork.image} 
-                          alt={artwork.title}
-                          className="artwork-image"
-                        />
-                        
-                        {/* Price Tag */}
-                        <div className="price-tag">
-                          <span className="price">{formatPrice(artwork.price)}</span>
-                        </div>
-                        
-                        {/* Hover Overlay */}
-                        <div className="artwork-overlay">
-                          <div className="overlay-content">
-                            <h3 className="artwork-title">{artwork.title}</h3>
-                            <p className="artwork-details">{artwork.medium} • {artwork.size}</p>
-                            <button className="inquire-btn">Inquire</button>
+              {/* Gallery Grid - Modern Museum Style */}
+              {artist.artworks.length > 0 && (
+                <div className="gallery-container">
+                  <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-12 md:py-16">
+                    <div className="gallery-grid">
+                      {artist.artworks.map((artwork, idx) => (
+                        <div
+                          key={artwork.id}
+                          className={`artwork-card ${idx === 0 || idx === 5 ? 'featured' : ''}`}
+                        >
+                          <div className="artwork-frame">
+                            <img
+                              src={artwork.image}
+                              alt={artwork.title}
+                              className="artwork-image"
+                            />
+
+                            {/* Price Tag */}
+                            <div className="price-tag">
+                              <span className="price">{formatPrice(artwork.price)}</span>
+                            </div>
+
+                            {/* Hover Overlay */}
+                            <div className="artwork-overlay">
+                              <div className="overlay-content">
+                                <h3 className="artwork-title">{artwork.title}</h3>
+                                <p className="artwork-details">{artwork.medium} • {artwork.size}</p>
+                                <button className="inquire-btn">Inquire</button>
+                                <button
+                                  className="view-room-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setViewRoomArtwork(artwork);
+                                    setSelectedRoom('cream');
+                                  }}
+                                >
+                                  View in Room
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
-            </div>
-          </section>
-        ))}
+              )}
+            </section>
+          );
+        })}
       </div>
 
+      {/* View in Room Modal */}
+      {viewRoomArtwork && (
+        <div className="view-room-modal">
+          <div className="view-room-backdrop" onClick={() => setViewRoomArtwork(null)} />
+          <div className="view-room-content animate-fade-in">
+            <button
+              className="view-room-close"
+              onClick={() => setViewRoomArtwork(null)}
+            >
+              <X className="w-5 h-5 text-studio-charcoal" />
+            </button>
+
+            <div className="p-6 pb-4">
+              <h3 className="font-display text-2xl text-studio-charcoal">{viewRoomArtwork.title}</h3>
+              <p className="font-body text-studio-stone">{viewRoomArtwork.size}</p>
+            </div>
+
+            <div className={`room-scene room-wall-${selectedRoom}`}>
+              <div className="room-wall">
+                <div className="room-artwork-container">
+                  <img
+                    src={viewRoomArtwork.image}
+                    alt={viewRoomArtwork.title}
+                    className="room-artwork-image"
+                  />
+                </div>
+              </div>
+              <div className="room-furniture" />
+              <div className="room-floor" />
+            </div>
+
+            <div className="room-selector">
+              {(['cream', 'blush', 'sage'] as const).map((room) => (
+                <button
+                  key={room}
+                  className={`room-option ${selectedRoom === room ? 'active' : ''}`}
+                  onClick={() => setSelectedRoom(room)}
+                >
+                  {room.charAt(0).toUpperCase() + room.slice(1)} Room
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Section: About / Studio */}
-      <section id="about" className="about-section relative z-30 bg-studio-black py-24 md:py-32">
+      <section id="about" className="about-section relative z-30 bg-studio-charcoal py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="about-image">
@@ -402,7 +465,7 @@ function App() {
               
               <div className="space-y-6 text-studio-gray leading-relaxed">
                 <p>
-                  Studio Nouveau is a collective of three talented artists based in Baton Rouge, Louisiana. 
+                  Studio Nouveau is a collective of four talented artists based in Baton Rouge, Louisiana. 
                   Founded on the belief that art should inspire and transform, our studio has become 
                   a haven for creative expression.
                 </p>
@@ -419,11 +482,11 @@ function App() {
               
               <div className="flex flex-wrap gap-8 mt-10 pt-10 border-t border-studio-white/10">
                 <div>
-                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">3</div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">4</div>
                   <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">ARTISTS</div>
                 </div>
                 <div>
-                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">21+</div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">{artists.reduce((sum, a) => sum + a.artworks.length, 0)}+</div>
                   <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">ARTWORKS</div>
                 </div>
                 <div>
@@ -436,8 +499,35 @@ function App() {
         </div>
       </section>
 
+      {/* Section: Gallery Photos */}
+      <section id="gallery" className="relative z-30 bg-studio-cream py-24 md:py-32">
+        <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20">
+          <div className="text-center mb-16">
+            <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75 uppercase">
+              Inside the Studio
+            </div>
+            <h2 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-tight text-studio-charcoal mb-4">
+              OUR SPACE
+            </h2>
+            <p className="font-body text-lg text-studio-stone max-w-2xl mx-auto">
+              A warm, inviting gallery where art comes to life. Come visit us and experience the beauty in person.
+            </p>
+          </div>
+          <div className="gallery-photos-grid">
+            {[1,2,3,4,5,6,7,8,9].map((n) => (
+              <img
+                key={n}
+                src={`/images/gallery-${n}.jpg`}
+                alt={`Studio interior ${n}`}
+                className="gallery-photo"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Section: Contact */}
-      <section id="contact" className="contact-section relative z-40 bg-studio-cream py-24 md:py-32 px-6 md:px-14 lg:px-20">
+      <section id="contact" className="contact-section relative z-40 bg-studio-blush py-24 md:py-32 px-6 md:px-14 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <div className="contact-info">

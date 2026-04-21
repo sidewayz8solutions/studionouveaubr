@@ -6,17 +6,23 @@ module.exports = {
     extend: {
       colors: {
         'studio': {
-          black: '#0B0B0C',
-          white: '#F7F7F7',
-          cream: '#F4F2EE',
-          gold: '#D4A24F',
-          gray: '#B8B8B8',
+          cream: '#FAF7F2',
+          blush: '#F0E4E0',
+          sage: '#E2E8E0',
+          lavender: '#E8E4F0',
+          charcoal: '#3D3D3D',
+          gold: '#C4A574',
+          rose: '#C9A5A0',
+          gray: '#9E9E9E',
+          stone: '#8C8C8C',
+          white: '#FFFFFF',
         },
       },
       fontFamily: {
-        display: ['Montserrat', 'sans-serif'],
+        display: ['"Playfair Display"', 'serif'],
+        body: ['"Cormorant Garamond"', 'serif'],
         sans: ['Inter', 'sans-serif'],
-        mono: ['IBM Plex Mono', 'monospace'],
+        mono: ['Inter', 'sans-serif'],
       },
       keyframes: {
         "fade-in": {
