@@ -17,19 +17,19 @@ section {
 }
 
 .artist-header-bg-debbie {
-  background: linear-gradient(135deg, #FAF3F1 0%, #FDF8F6 50%, #FAF3F1 100%);
+  background: linear-gradient(135deg, #FDF8F6 0%, #FAF3F0 50%, #FDF8F6 100%);
 }
 
 .artist-header-bg-betty {
-  background: linear-gradient(135deg, #F3F1F7 0%, #F9F8FB 50%, #F3F1F7 100%);
+  background: linear-gradient(135deg, #F8F7FB 0%, #F3F1F8 50%, #F8F7FB 100%);
 }
 
 .artist-header-bg-tonni {
-  background: linear-gradient(135deg, #EEF1EE 0%, #F6F8F6 50%, #EEF1EE 100%);
+  background: linear-gradient(135deg, #F5F7F5 0%, #EEF2EE 50%, #F5F7F5 100%);
 }
 
 .artist-header-bg-guest {
-  background: linear-gradient(135deg, #F5F2ED 0%, #FAF7F2 50%, #F5F2ED 100%);
+  background: linear-gradient(135deg, #FAF7F2 0%, #F5F0E8 50%, #FAF7F2 100%);
 }
 
 .artist-header-bg::before {
@@ -39,12 +39,12 @@ section {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(ellipse at 30% 50%, rgba(196, 165, 116, 0.12) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 30% 50%, rgba(212, 162, 79, 0.06) 0%, transparent 50%);
   pointer-events: none;
 }
 
 .gallery-container {
-  background: #FDFCFB;
+  background: #F4F2EE;
   position: relative;
 }
 
@@ -55,7 +55,7 @@ section {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(61, 61, 61, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(11, 11, 12, 0.1), transparent);
 }
 
 .gallery-grid {
@@ -92,12 +92,12 @@ section {
   position: relative;
   background: white;
   padding: 0.75rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .artwork-card:hover .artwork-frame {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
 }
 
@@ -117,24 +117,24 @@ section {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: #C4A574;
+  background: #D4A24F;
   padding: 0.5rem 1rem;
   z-index: 10;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .price {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 0.875rem;
-  color: #1A1A1A;
+  color: #0B0B0C;
   letter-spacing: -0.02em;
 }
 
 .artwork-overlay {
   position: absolute;
   inset: 0.75rem;
-  background: linear-gradient(to top, rgba(61, 61, 61, 0.92) 0%, rgba(61, 61, 61, 0.65) 40%, transparent 100%);
+  background: linear-gradient(to top, rgba(11, 11, 12, 0.95) 0%, rgba(11, 11, 12, 0.7) 40%, transparent 100%);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -158,29 +158,28 @@ section {
 }
 
 .artwork-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   color: white;
   margin-bottom: 0.25rem;
 }
 
 .artwork-details {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 600;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.95);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 1rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
 }
 
 .inquire-btn {
-  background: #C4A574;
-  color: #1A1A1A;
-  font-family: 'Inter', sans-serif;
+  background: #D4A24F;
+  color: #0B0B0C;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
   padding: 0.625rem 1.5rem;
   border: none;
   cursor: pointer;
@@ -188,28 +187,27 @@ section {
 }
 
 .inquire-btn:hover {
-  background: #FFFFFF;
-  color: #1A1A1A;
+  background: white;
   transform: scale(1.05);
 }
 
 .view-room-btn {
   background: transparent;
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(255, 255, 255, 0.9);
   font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 0.75rem;
+  font-weight: 400;
+  font-size: 0.7rem;
   letter-spacing: 0.08em;
   padding: 0.5rem 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 0.5rem;
 }
 
 .view-room-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.7);
 }
 
 button[type="submit"] {
@@ -237,26 +235,6 @@ nav {
   -webkit-backdrop-filter: blur(8px);
 }
 
-.nav-link {
-  position: relative;
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #C4A574, transparent);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateX(-50%);
-}
-
-.nav-link:hover::after {
-  width: 80%;
-}
-
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
@@ -280,13 +258,13 @@ nav {
 .view-room-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(61, 61, 61, 0.6);
+  background: rgba(11, 11, 12, 0.6);
   backdrop-filter: blur(4px);
 }
 
 .view-room-content {
   position: relative;
-  background: #FAF7F2;
+  background: #F4F2EE;
   border-radius: 4px;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
   max-width: 1000px;
@@ -412,17 +390,17 @@ nav {
   font-size: 0.8rem;
   letter-spacing: 0.03em;
   transition: all 0.2s ease;
-  color: #1A1A1A;
+  color: #0B0B0C;
 }
 
 .room-option:hover {
-  border-color: #C4A574;
+  border-color: #D4A24F;
 }
 
 .room-option.active {
-  background: #C4A574;
-  color: #1A1A1A;
-  border-color: #C4A574;
+  background: #D4A24F;
+  color: #0B0B0C;
+  border-color: #D4A24F;
 }
 
 .gallery-photos-grid {

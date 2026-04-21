@@ -257,13 +257,10 @@ function App() {
               </p>
               
               <button 
-                onClick={() => {
-                  setShowEventPopup(false);
-                  scrollToSection('contact');
-                }}
+                onClick={() => setShowEventPopup(false)}
                 className="w-full bg-studio-black text-studio-white py-4 font-display font-semibold tracking-wide hover:bg-studio-gold hover:text-studio-black transition-colors duration-300"
               >
-                RSVP NOW
+                CLOSE
               </button>
             </div>
           </div>
@@ -271,20 +268,24 @@ function App() {
       )}
 
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-300 ${scrolled ? 'bg-studio-cream/95 backdrop-blur-md shadow-sm' : 'bg-gradient-to-b from-studio-black/80 to-transparent'}`}>
-        <div className={`font-display font-bold text-lg tracking-tight transition-colors ${scrolled ? 'text-studio-charcoal' : 'text-studio-white'}`}>
-          Studio Nouveau
+      <nav className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-300 ${scrolled ? 'bg-studio-blush/95 backdrop-blur-md shadow-sm' : 'bg-gradient-to-b from-studio-black/80 to-transparent'}`}>
+        <div className={`font-display font-bold text-lg tracking-tight transition-colors ${scrolled ? 'text-studio-ink' : 'text-studio-white'}`}>
+          <span className={`italic font-medium ${scrolled ? 'text-studio-gold' : 'text-studio-gold'}`}>Studio</span> Nouveau
         </div>
-        <div className="hidden md:flex items-center gap-8">
-          <button onClick={() => scrollToSection('artists')} className={`text-sm transition-colors ${scrolled ? 'text-studio-stone hover:text-studio-charcoal' : 'text-studio-gray hover:text-studio-white'}`}>
-            Artists
-          </button>
-          <button onClick={() => scrollToSection('about')} className={`text-sm transition-colors ${scrolled ? 'text-studio-stone hover:text-studio-charcoal' : 'text-studio-gray hover:text-studio-white'}`}>
-            About
-          </button>
-          <button onClick={() => scrollToSection('contact')} className={`text-sm transition-colors ${scrolled ? 'text-studio-stone hover:text-studio-charcoal' : 'text-studio-gray hover:text-studio-white'}`}>
-            Contact
-          </button>
+        <div className="hidden md:flex items-center gap-1">
+          {['Artists', 'About', 'Contact'].map((item, i) => (
+            <div key={item} className="flex items-center">
+              {i > 0 && (
+                <span className={`mx-3 text-[10px] ${scrolled ? 'text-studio-gold' : 'text-studio-gold/60'}`}>◆</span>
+              )}
+              <button 
+                onClick={() => scrollToSection(item.toLowerCase())} 
+                className={`nav-link relative px-3 py-2 text-sm tracking-wide transition-colors ${scrolled ? 'text-studio-ink/80 hover:text-studio-ink' : 'text-studio-gray hover:text-studio-white'}`}
+              >
+                {item}
+              </button>
+            </div>
+          ))}
         </div>
       </nav>
 
@@ -351,11 +352,11 @@ function App() {
                       <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75 uppercase">
                         {artist.specialty}
                       </div>
-                      <h2 className="font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-tight text-studio-charcoal">
+                      <h2 className="font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-tight text-studio-ink">
                         {artist.name.toUpperCase()}
                       </h2>
                     </div>
-                    <p className="max-w-md text-studio-charcoal/80 leading-relaxed lg:text-right font-body text-lg">
+                    <p className="max-w-md text-studio-ink/80 leading-relaxed lg:text-right">
                       {artist.bio}
                     </p>
                   </div>
@@ -423,12 +424,12 @@ function App() {
               className="view-room-close"
               onClick={() => setViewRoomArtwork(null)}
             >
-              <X className="w-5 h-5 text-studio-charcoal" />
+              <X className="w-5 h-5 text-studio-ink" />
             </button>
 
             <div className="p-6 pb-4">
-              <h3 className="font-display text-2xl text-studio-charcoal">{viewRoomArtwork.title}</h3>
-              <p className="font-body text-studio-stone">{viewRoomArtwork.size}</p>
+              <h3 className="font-display font-bold text-2xl text-studio-ink">{viewRoomArtwork.title}</h3>
+              <p className="text-studio-ink/70">{viewRoomArtwork.size}</p>
             </div>
 
             <div className={`room-scene room-wall-${selectedRoom}`}>
@@ -461,7 +462,7 @@ function App() {
       )}
 
       {/* Section: About / Studio */}
-      <section id="about" className="about-section relative z-30 bg-studio-charcoal py-24 md:py-32">
+      <section id="about" className="about-section relative z-30 bg-studio-black py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="about-image">
@@ -527,10 +528,10 @@ function App() {
             <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75 uppercase">
               Inside the Studio
             </div>
-            <h2 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-tight text-studio-charcoal mb-4">
+            <h2 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-tight text-studio-ink mb-4">
               OUR SPACE
             </h2>
-            <p className="font-body text-lg text-studio-stone max-w-2xl mx-auto">
+            <p className="text-lg text-studio-ink/70 max-w-2xl mx-auto">
               A warm, inviting gallery where art comes to life. Come visit us and experience the beauty in person.
             </p>
           </div>
@@ -548,7 +549,7 @@ function App() {
       </section>
 
       {/* Section: Contact */}
-      <section id="contact" className="contact-section relative z-40 bg-studio-blush py-24 md:py-32 px-6 md:px-14 lg:px-20">
+      <section id="contact" className="contact-section relative z-40 bg-studio-cream py-24 md:py-32 px-6 md:px-14 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <div className="contact-info">
