@@ -18,98 +18,74 @@ export const artists: Artist[] = [
     artworks: [
       { 
         id: 1, 
-        title: 'Sunset Reflections', 
-        image: '/images/debbie-sunset-reflection.jpg', 
-        price: 450, 
-        size: '24 x 24"', 
-        medium: 'Acrylic on Canvas' 
+        title: 'The Tiger', 
+        image: '/images/debbie-tiger.jpg', 
+        price: 75, 
+        size: '11 x 9"', 
+        medium: 'Mixed Media' 
       },
       { 
         id: 2, 
-        title: 'Sunset Over the Lake', 
-        image: '/images/debbie-sunset-trees.jpg', 
-        price: 520, 
-        size: '30 x 24"', 
-        medium: 'Acrylic on Canvas' 
+        title: 'Strutting Around', 
+        image: '/images/debbie-strutting-around.jpg', 
+        price: 150, 
+        size: '14 x 14"', 
+        medium: 'Mixed Media' 
       },
       { 
         id: 3, 
-        title: 'Hummingbird Garden', 
-        image: '/images/debbie-hummingbird-flowers.jpg', 
-        price: 380, 
-        size: '20 x 20"', 
+        title: 'Time To Bloom', 
+        image: '/images/debbie-time-to-bloom.jpg', 
+        price: 300, 
+        size: '16 x 20"', 
         medium: 'Mixed Media' 
       },
       { 
         id: 4, 
-        title: 'Zentangle Cardinal', 
-        image: '/images/debbie-zentangle-cardinal-1.png', 
-        price: 150, 
-        size: '12 x 12"', 
-        medium: 'Ink on Paper' 
+        title: 'Sweet Nectar', 
+        image: '/images/debbie-sweet-nectar.jpg', 
+        price: 575, 
+        size: '24 x 24"', 
+        medium: 'Mixed Media' 
       },
       { 
         id: 5, 
-        title: 'Blue Whale', 
-        image: '/images/debbie-whale-zentangle.jpeg', 
-        price: 175, 
-        size: '14 x 11"', 
-        medium: 'Ink & Watercolor' 
+        title: 'Waiting And Watching', 
+        image: '/images/debbie-waiting-and-watching.jpg', 
+        price: 575, 
+        size: '24 x 24"', 
+        medium: 'Mixed Media' 
       },
       { 
         id: 6, 
-        title: 'Butterfly Dreams', 
-        image: '/images/debbie-butterfly-zentangle.png', 
-        price: 200, 
-        size: '16 x 12"', 
-        medium: 'Ink on Paper' 
+        title: 'Sunset on the Bayou', 
+        image: '/images/debbie-sunset-on-the-bayou.jpg', 
+        price: 700, 
+        size: '24 x 30"', 
+        medium: 'Mixed Media' 
       },
       { 
         id: 7, 
-        title: 'Fox Spirit', 
-        image: '/images/debbie-fox-zentangle.png', 
-        price: 225, 
-        size: '16 x 16"', 
-        medium: 'Ink & Marker' 
+        title: 'Springtime', 
+        image: '/images/debbie-springtime.jpg', 
+        price: 1200, 
+        size: '30 x 40"', 
+        medium: 'Mixed Media' 
       },
       { 
         id: 8, 
-        title: 'Field of Flowers', 
-        image: '/images/debbie-field-flowers-framed.png', 
-        price: 300, 
-        size: '21 x 17"', 
-        medium: 'Acrylic' 
+        title: 'It\'s A Party', 
+        image: '/images/debbie-its-a-party.jpg', 
+        price: 1200, 
+        size: '36 x 36"', 
+        medium: 'Mixed Media' 
       },
       { 
         id: 9, 
-        title: 'Ocean Wave', 
-        image: '/images/debbie-ocean-wave.png', 
-        price: 650, 
-        size: '36 x 24"', 
-        medium: 'Acrylic on Canvas' 
-      },
-      { 
-        id: 10, 
-        title: 'White Egret', 
-        image: '/images/debbie-egret.png', 
-        price: 580, 
+        title: 'Sunflowers in South Dakota', 
+        image: '/images/debbie-sunflowers-in-south-dakota.jpg', 
+        price: 900, 
         size: '30 x 30"', 
-        medium: 'Acrylic on Canvas' 
-      },
-      { 
-        id: 11, 
-        title: 'Sunflower Field', 
-        image: '/images/debbie-sunflowers.png', 
-        price: 480, 
-        size: '24 x 30"', 
-        medium: 'Acrylic' 
-      },
-      { 
-        id: 12, 
-        title: 'Rainbow Birds', 
-        image: '/images/debbie-rainbow-birds.png', 
-        price: 350, 
-        size: '20 x 16"', 
         medium: 'Mixed Media' 
       },
     ]
@@ -160,43 +136,75 @@ export const artists: Artist[] = [
     artworks: [
       { 
         id: 17, 
-        title: 'Golden Tree', 
-        image: '/images/abstract-tree.jpg', 
-        price: 1650, 
-        size: '30 x 30"', 
+        title: 'The Winter Guard', 
+        image: '/images/tonni-the-winter-guard.jpg', 
+        price: 1200, 
+        size: '36 x 36"', 
         medium: 'Acrylic on Canvas' 
       },
       { 
         id: 18, 
-        title: 'Bear Cub', 
-        image: '/images/bear.jpg', 
-        price: 2200, 
-        size: '36 x 36"', 
-        medium: 'Mixed Media' 
+        title: 'Pretty in Pink', 
+        image: '/images/tonni-pretty-in-pink.jpg', 
+        price: 450, 
+        size: '12 x 36"', 
+        medium: 'Acrylic on Canvas' 
       },
       { 
         id: 19, 
-        title: 'Ocean Whisper', 
-        image: '/images/whale.jpg', 
-        price: 1950, 
-        size: '36 x 24"', 
+        title: 'Flowers on the Path', 
+        image: '/images/tonni-flowers-on-the-path.jpg', 
+        price: 1200, 
+        size: '30 x 40"', 
         medium: 'Acrylic on Canvas' 
       },
       { 
         id: 20, 
-        title: 'Cardinal', 
-        image: '/images/cardinal.jpg', 
+        title: 'The Secret Garden', 
+        image: '/images/tonni-the-secret-garden.jpg', 
         price: 1200, 
-        size: '20 x 20"', 
+        size: '36 x 36"', 
         medium: 'Acrylic on Canvas' 
       },
       { 
         id: 21, 
-        title: 'Bluebird', 
-        image: '/images/bluebird.jpg', 
-        price: 950, 
-        size: '16 x 16"', 
-        medium: 'Oil on Canvas' 
+        title: 'At the Arboretum', 
+        image: '/images/tonni-at-the-arboretum.jpg', 
+        price: 400, 
+        size: '20 x 20"', 
+        medium: 'Acrylic on Canvas' 
+      },
+      { 
+        id: 22, 
+        title: 'Colors of Provence', 
+        image: '/images/tonni-colors-of-provence.jpg', 
+        price: 720, 
+        size: '24 x 30"', 
+        medium: 'Acrylic on Canvas' 
+      },
+      { 
+        id: 23, 
+        title: 'Reflections', 
+        image: '/images/tonni-reflections.jpg', 
+        price: 720, 
+        size: 'TBD', 
+        medium: 'Acrylic on Canvas' 
+      },
+      { 
+        id: 24, 
+        title: 'Bell River', 
+        image: '/images/tonni-bell-river.jpg', 
+        price: 1200, 
+        size: '36 x 36"', 
+        medium: 'Acrylic on Canvas' 
+      },
+      { 
+        id: 25, 
+        title: 'At Night on the Seine', 
+        image: '/images/tonni-at-night-on-the-seine.jpg', 
+        price: 1200, 
+        size: '36 x 36"', 
+        medium: 'Acrylic on Canvas' 
       },
     ]
   },
