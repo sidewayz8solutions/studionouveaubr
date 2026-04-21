@@ -107,7 +107,7 @@ export const artists: Artist[] = [
         id: 27,
         title: 'Dreamscape',
         image: '/images/betty-dreamscape.jpg',
-        price: 1200,
+        price: 2450,
         size: '30 x 24"',
         medium: 'Oil Pastel on Paper'
       },
@@ -115,7 +115,7 @@ export const artists: Artist[] = [
         id: 27,
         title: 'Here We Go Again',
         image: '/images/betty-here-we-go-again.jpg',
-        price: 650,
+        price: 1050,
         size: '24 x 18"',
         medium: 'Acrylic and Inks on Paper'
       },
@@ -187,7 +187,7 @@ export const artists: Artist[] = [
         id: 36,
         title: 'Action Please',
         image: '/images/betty-action-please.jpg',
-        price: 700,
+        price: 1250,
         size: '24 x 20"',
         medium: 'Acrylic and Archival Ink on Paper'
       },
@@ -195,7 +195,7 @@ export const artists: Artist[] = [
         id: 37,
         title: 'Unexpected',
         image: '/images/betty-unexpected.jpg',
-        price: 750,
+        price: 1150,
         size: '24 x 24"',
         medium: 'Acrylic on Canvas'
       },
@@ -203,7 +203,7 @@ export const artists: Artist[] = [
         id: 38,
         title: 'Morning Silence',
         image: '/images/betty-morning-silence.jpg',
-        price: 550,
+        price: 1950,
         size: '26 x 19"',
         medium: 'Pastel on Paper'
       },
@@ -211,7 +211,7 @@ export const artists: Artist[] = [
         id: 39,
         title: 'Behind the Door',
         image: '/images/betty-behind-the-door.jpg',
-        price: 600,
+        price: 850,
         size: '24 x 18"',
         medium: 'Acrylic'
       },
@@ -219,7 +219,7 @@ export const artists: Artist[] = [
         id: 40,
         title: 'Moving Waters',
         image: '/images/betty-moving-waters.jpg',
-        price: 3000,
+        price: 4250,
         size: '60 x 48"',
         medium: 'Acrylic on Canvas'
       },
@@ -227,7 +227,7 @@ export const artists: Artist[] = [
         id: 41,
         title: 'Feeling Misty',
         image: '/images/betty-feeling-misty.jpg',
-        price: 1500,
+        price: 2400,
         size: '40 x 24"',
         medium: 'Abstract Acrylic'
       },
@@ -235,7 +235,7 @@ export const artists: Artist[] = [
         id: 42,
         title: 'Burst of Energy',
         image: '/images/betty-burst-of-energy.jpg',
-        price: 1600,
+        price: 2550,
         size: '36 x 36"',
         medium: 'Acrylic and Ink on Canvas'
       },
@@ -243,7 +243,7 @@ export const artists: Artist[] = [
         id: 43,
         title: 'Catching the Light',
         image: '/images/betty-catching-the-light.jpg',
-        price: 1800,
+        price: 2450,
         size: '40 x 34"',
         medium: 'Acrylic on Canvas'
       },
@@ -251,7 +251,7 @@ export const artists: Artist[] = [
         id: 44,
         title: 'Rainy Day',
         image: '/images/betty-rainy-day.jpg',
-        price: 600,
+        price: 4050,
         size: '24 x 18"',
         medium: 'Acrylic'
       },
