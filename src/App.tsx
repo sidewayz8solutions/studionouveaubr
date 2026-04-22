@@ -46,10 +46,10 @@ function ViewInRoomModal({ artwork, onClose }: ViewInRoomProps) {
     dragRef.current = null;
   };
 
-  const roomBg: Record<string, string> = {
-    living: 'linear-gradient(180deg, #E8E2D9 0%, #DDD5C8 100%)',
-    bedroom: 'linear-gradient(180deg, #D5C8B8 0%, #CBBFAF 100%)',
-    dining: 'linear-gradient(180deg, #C8C8C0 0%, #B8B8B0 100%)',
+  const roomImages: Record<string, string> = {
+    living: '/images/rooms/living-room.jpg',
+    bedroom: '/images/rooms/bedroom.jpg',
+    dining: '/images/rooms/dining-room.jpg',
   };
 
   return (
@@ -69,8 +69,8 @@ function ViewInRoomModal({ artwork, onClose }: ViewInRoomProps) {
 
         <div
           ref={sceneRef}
-          className="relative w-full cursor-move select-none"
-          style={{ aspectRatio: '16/10', background: roomBg[room], overflow: 'hidden' }}
+          className="relative w-full cursor-move select-none room-photo-scene"
+          style={{ backgroundImage: `url(${roomImages[room]})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           onMouseDown={(e) => handleDown(e.clientX, e.clientY)}
           onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
           onMouseUp={handleUp}
@@ -79,34 +79,21 @@ function ViewInRoomModal({ artwork, onClose }: ViewInRoomProps) {
           onTouchMove={(e) => handleMove(e.touches[0].clientX, e.touches[0].clientY)}
           onTouchEnd={handleUp}
         >
-          {/* Wall texture */}
-          <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(0,0,0,0.03) 50px, rgba(0,0,0,0.03) 51px)' }} />
-
-          {/* Baseboard */}
-          <div className="absolute bottom-[18%] left-0 right-0 h-3 bg-white/60 border-t border-black/10" />
-
-          {/* Floor */}
-          <div className="absolute bottom-0 left-0 right-0 h-[18%]" style={{ background: 'linear-gradient(180deg, #9E8B7D 0%, #7D6B5D 100%)' }} />
-
-          {/* Sofa silhouette */}
-          <div className="absolute bottom-[18%] left-1/2 -translate-x-1/2 w-[55%] h-[22%]">
-            <div className="absolute bottom-0 left-0 right-0 h-[70%] bg-[#5A4D42] rounded-t-xl" />
-            <div className="absolute bottom-[50%] left-0 w-[15%] h-[60%] bg-[#4A3D32] rounded-t-lg" />
-            <div className="absolute bottom-[50%] right-0 w-[15%] h-[60%] bg-[#4A3D32] rounded-t-lg" />
-          </div>
+          {/* Subtle shadow overlay for depth */}
+          <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 80px rgba(0,0,0,0.15)' }} />
 
           {/* Artwork on wall */}
           <div
             className="absolute"
             style={{
               left: `calc(50% + ${pos.x}%)`,
-              top: `calc(35% + ${pos.y}%)`,
+              top: `calc(42% + ${pos.y}%)`,
               transform: 'translate(-50%, -50%)',
               width: `${artW}%`,
               zIndex: 10,
             }}
           >
-            <div className="bg-white p-2 shadow-2xl">
+            <div className="room-artwork-frame">
               <img
                 src={artwork.image}
                 alt={artwork.title}

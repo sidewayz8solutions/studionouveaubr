@@ -277,60 +277,30 @@ nav {
   transform: scale(1.1);
 }
 
-.room-scene {
+.room-photo-scene {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 10;
   overflow: hidden;
+  border-radius: 2px;
 }
 
-.room-wall {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.room-wall-cream {
-  background: linear-gradient(180deg, #F5F0E8 0%, #EDE6DA 100%);
-}
-
-.room-wall-blush {
-  background: linear-gradient(180deg, #F0E4E0 0%, #E8D8D2 100%);
-}
-
-.room-wall-sage {
-  background: linear-gradient(180deg, #E2E8E0 0%, #D8E0D6 100%);
-}
-
-.room-floor {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 20%;
-  background: linear-gradient(180deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.08) 100%);
-}
-
-.room-floor::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(0, 0, 0, 0.08);
-}
-
-.room-artwork-container {
-  position: relative;
-  z-index: 2;
+.room-artwork-frame {
   background: white;
   padding: 0.5rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-  max-width: 55%;
-  max-height: 65%;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.25),
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.room-artwork-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  pointer-events: none;
 }
 
 .room-artwork-image {
@@ -338,18 +308,6 @@ nav {
   height: 100%;
   object-fit: contain;
   display: block;
-}
-
-.room-furniture {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70%;
-  height: 25%;
-  background: linear-gradient(180deg, rgba(139, 119, 101, 0.15) 0%, rgba(139, 119, 101, 0.25) 100%);
-  border-radius: 8px 8px 0 0;
-  z-index: 1;
 }
 
 .room-selector {
@@ -425,7 +383,7 @@ nav {
     font-size: 0.75rem;
   }
 
-  .room-scene {
+  .room-photo-scene {
     aspect-ratio: 4 / 3;
   }
 
