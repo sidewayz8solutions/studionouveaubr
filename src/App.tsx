@@ -201,6 +201,16 @@ function App() {
     }).format(price);
   };
 
+  const getAspectRatio = (size: string) => {
+    const match = size.match(/(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)/);
+    if (match) {
+      const w = parseFloat(match[1]);
+      const h = parseFloat(match[2]);
+      if (w && h) return w / h;
+    }
+    return 1;
+  };
+
   return (
     <div className="relative">
       {/* Grain overlay */}
@@ -297,7 +307,7 @@ function App() {
             </h1>
             
             <p className="hero-subheadline text-base md:text-lg text-studio-gray max-w-md mb-10 leading-relaxed">
-              Three artists. One vision. Original paintings and creative works crafted with passion and precision.
+              Four artists. One vision. Original paintings and creative works crafted with passion and precision.
             </p>
             
             <button 
@@ -357,6 +367,7 @@ function App() {
                           src={artwork.image} 
                           alt={artwork.title}
                           className="artwork-image"
+                          style={{ aspectRatio: getAspectRatio(artwork.size) }}
                         />
                         
                         {/* Price Tag */}
@@ -416,6 +427,7 @@ function App() {
                     src={viewRoomArtwork.image}
                     alt={viewRoomArtwork.title}
                     className="room-artwork-image"
+                    style={{ aspectRatio: getAspectRatio(viewRoomArtwork.size) }}
                   />
                 </div>
               </div>
@@ -464,7 +476,7 @@ function App() {
               
               <div className="space-y-6 text-studio-gray leading-relaxed">
                 <p>
-                  Studio Nouveau is a collective of three talented artists based in Baton Rouge, Louisiana. 
+                  Studio Nouveau is a collective of four talented artists based in Baton Rouge, Louisiana. 
                   Founded on the belief that art should inspire and transform, our studio has become 
                   a haven for creative expression.
                 </p>
