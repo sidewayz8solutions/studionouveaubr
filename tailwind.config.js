@@ -11,10 +11,6 @@ module.exports = {
           cream: '#F4F2EE',
           gold: '#D4A24F',
           gray: '#B8B8B8',
-          blush: '#FDF8F6',
-          sage: '#F5F7F5',
-          lavender: '#F8F7FB',
-          ink: '#1A1A1A',
         },
       },
       fontFamily: {

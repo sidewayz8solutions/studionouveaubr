@@ -1,22 +1,8 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import {
-  ArrowDown,
-  ArrowRight,
-  Calendar,
-  Instagram,
-  Mail,
-  MapPin,
-  Sparkles,
-  X,
-} from 'lucide-react';
-
+import { ArrowRight, ArrowDown, Mail, MapPin, Calendar, Instagram, X, Sparkles } from 'lucide-react';
+import './App.css';
 import { artists } from './data/artists';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -268,24 +254,20 @@ function App() {
       )}
 
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-300 ${scrolled ? 'bg-studio-blush/95 backdrop-blur-md shadow-sm' : 'bg-gradient-to-b from-studio-black/80 to-transparent'}`}>
-        <div className={`font-display font-bold text-lg tracking-tight transition-colors ${scrolled ? 'text-studio-ink' : 'text-studio-white'}`}>
-          <span className={`italic font-medium ${scrolled ? 'text-studio-gold' : 'text-studio-gold'}`}>Studio</span> Nouveau
+      <nav className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-300 ${scrolled ? 'bg-studio-black/90 backdrop-blur-md' : 'bg-gradient-to-b from-studio-black/80 to-transparent'}`}>
+        <div className="font-display font-bold text-lg tracking-tight text-studio-white">
+          Studio Nouveau
         </div>
-        <div className="hidden md:flex items-center gap-1">
-          {['Artists', 'About', 'Contact'].map((item, i) => (
-            <div key={item} className="flex items-center">
-              {i > 0 && (
-                <span className={`mx-3 text-[10px] ${scrolled ? 'text-studio-gold' : 'text-studio-gold/60'}`}>◆</span>
-              )}
-              <button 
-                onClick={() => scrollToSection(item.toLowerCase())} 
-                className={`nav-link relative px-3 py-2 text-sm tracking-wide transition-colors ${scrolled ? 'text-studio-ink/80 hover:text-studio-ink' : 'text-studio-gray hover:text-studio-white'}`}
-              >
-                {item}
-              </button>
-            </div>
-          ))}
+        <div className="hidden md:flex items-center gap-8">
+          <button onClick={() => scrollToSection('artists')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+            Artists
+          </button>
+          <button onClick={() => scrollToSection('about')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+            About
+          </button>
+          <button onClick={() => scrollToSection('contact')} className="text-sm text-studio-gray hover:text-studio-white transition-colors">
+            Contact
+          </button>
         </div>
       </nav>
 
@@ -315,7 +297,7 @@ function App() {
             </h1>
             
             <p className="hero-subheadline text-base md:text-lg text-studio-gray max-w-md mb-10 leading-relaxed">
-              Four artists. One vision. Original paintings and creative works crafted with passion and precision.
+              Three artists. One vision. Original paintings and creative works crafted with passion and precision.
             </p>
             
             <button 
@@ -336,83 +318,78 @@ function App() {
 
       {/* Artist Sections */}
       <div id="artists" className="relative z-20">
-        {artists.map((artist, artistIndex) => {
-          const headerClasses = ['artist-header-bg-debbie', 'artist-header-bg-betty', 'artist-header-bg-tonni', 'artist-header-bg-guest'];
-          return (
-            <section
-              key={artist.name}
-              id={`artist-${artistIndex}`}
-              className="artist-gallery-section"
-            >
-              {/* Artist Header with Full Width Background */}
-              <div className={`artist-header-bg ${headerClasses[artistIndex] || 'artist-header-bg-guest'}`}>
-                <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-16 md:py-24">
-                  <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-                    <div>
-                      <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75 uppercase">
-                        {artist.specialty}
-                      </div>
-                      <h2 className="font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-tight text-studio-ink">
-                        {artist.name.toUpperCase()}
-                      </h2>
+        {artists.map((artist, artistIndex) => (
+          <section 
+            key={artist.name} 
+            id={`artist-${artistIndex}`}
+            className="artist-gallery-section"
+          >
+            {/* Artist Header with Full Width Background */}
+            <div className="artist-header-bg">
+              <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-16 md:py-24">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                  <div>
+                    <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75">
+                      {artist.specialty.toUpperCase()}
                     </div>
-                    <p className="max-w-md text-studio-ink/80 leading-relaxed lg:text-right">
-                      {artist.bio}
-                    </p>
+                    <h2 className="font-display font-black text-5xl md:text-7xl lg:text-8xl tracking-tight text-studio-white">
+                      {artist.name.toUpperCase()}
+                    </h2>
                   </div>
+                  <p className="max-w-md text-studio-gray leading-relaxed lg:text-right">
+                    {artist.bio}
+                  </p>
                 </div>
               </div>
+            </div>
 
-              {/* Gallery Grid - Modern Museum Style */}
-              {artist.artworks.length > 0 && (
-                <div className="gallery-container">
-                  <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-12 md:py-16">
-                    <div className="gallery-grid">
-                      {artist.artworks.map((artwork, idx) => (
-                        <div
-                          key={artwork.id}
-                          className={`artwork-card ${idx === 0 || idx === 5 ? 'featured' : ''}`}
-                        >
-                          <div className="artwork-frame">
-                            <img
-                              src={artwork.image}
-                              alt={artwork.title}
-                              className="artwork-image"
-                            />
-
-                            {/* Price Tag */}
-                            <div className="price-tag">
-                              <span className="price">{formatPrice(artwork.price)}</span>
-                            </div>
-
-                            {/* Hover Overlay */}
-                            <div className="artwork-overlay">
-                              <div className="overlay-content">
-                                <h3 className="artwork-title">{artwork.title}</h3>
-                                <p className="artwork-details">{artwork.medium} • {artwork.size}</p>
-                                <button className="inquire-btn">Inquire</button>
-                                <button
-                                  className="view-room-btn"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setViewRoomArtwork(artwork);
-                                    setSelectedRoom('cream');
-                                  }}
-                                >
-                                  View in Room
-                                </button>
-                              </div>
-                            </div>
+            {/* Gallery Grid - Modern Museum Style */}
+            <div className="gallery-container">
+              <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-12 md:py-16">
+                <div className="gallery-grid">
+                  {artist.artworks.map((artwork) => (
+                    <div 
+                      key={artwork.id} 
+                      className="artwork-card"
+                    >
+                      <div className="artwork-frame">
+                        <img 
+                          src={artwork.image} 
+                          alt={artwork.title}
+                          className="artwork-image"
+                        />
+                        
+                        {/* Price Tag */}
+                        <div className="price-tag">
+                          <span className="price">{formatPrice(artwork.price)}</span>
+                        </div>
+                        
+                        {/* Hover Overlay */}
+                        <div className="artwork-overlay">
+                          <div className="overlay-content">
+                            <h3 className="artwork-title">{artwork.title}</h3>
+                            <p className="artwork-details">{artwork.medium} • {artwork.size}</p>
+                            <button className="inquire-btn">Inquire</button>
+                            <button
+                              className="view-room-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setViewRoomArtwork(artwork);
+                                setSelectedRoom('cream');
+                              }}
+                            >
+                              View in Room
+                            </button>
                           </div>
                         </div>
-                      ))}
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              )}
-            </section>
-          );
-        })}
+              </div>
+            </div>
+          </section>
+        ))}
       </div>
 
       {/* View in Room Modal */}
@@ -424,12 +401,12 @@ function App() {
               className="view-room-close"
               onClick={() => setViewRoomArtwork(null)}
             >
-              <X className="w-5 h-5 text-studio-ink" />
+              <X className="w-5 h-5 text-studio-black" />
             </button>
 
             <div className="p-6 pb-4">
-              <h3 className="font-display font-bold text-2xl text-studio-ink">{viewRoomArtwork.title}</h3>
-              <p className="text-studio-ink/70">{viewRoomArtwork.size}</p>
+              <h3 className="font-display font-bold text-2xl text-studio-black">{viewRoomArtwork.title}</h3>
+              <p className="text-studio-black/70">{viewRoomArtwork.size}</p>
             </div>
 
             <div className={`room-scene room-wall-${selectedRoom}`}>
@@ -487,7 +464,7 @@ function App() {
               
               <div className="space-y-6 text-studio-gray leading-relaxed">
                 <p>
-                  Studio Nouveau is a collective of four talented artists based in Baton Rouge, Louisiana. 
+                  Studio Nouveau is a collective of three talented artists based in Baton Rouge, Louisiana. 
                   Founded on the belief that art should inspire and transform, our studio has become 
                   a haven for creative expression.
                 </p>
@@ -504,11 +481,11 @@ function App() {
               
               <div className="flex flex-wrap gap-8 mt-10 pt-10 border-t border-studio-white/10">
                 <div>
-                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">4</div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">3</div>
                   <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">ARTISTS</div>
                 </div>
                 <div>
-                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">{artists.reduce((sum, a) => sum + a.artworks.length, 0)}+</div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">21+</div>
                   <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">ARTWORKS</div>
                 </div>
                 <div>
@@ -528,10 +505,10 @@ function App() {
             <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75 uppercase">
               Inside the Studio
             </div>
-            <h2 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-tight text-studio-ink mb-4">
+            <h2 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-tight text-studio-black mb-4">
               OUR SPACE
             </h2>
-            <p className="text-lg text-studio-ink/70 max-w-2xl mx-auto">
+            <p className="text-lg text-studio-black/70 max-w-2xl mx-auto">
               A warm, inviting gallery where art comes to life. Come visit us and experience the beauty in person.
             </p>
           </div>

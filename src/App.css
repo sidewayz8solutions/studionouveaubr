@@ -12,24 +12,9 @@ section {
 }
 
 .artist-header-bg {
+  background: linear-gradient(135deg, #0B0B0C 0%, #1a1a1c 50%, #0B0B0C 100%);
   position: relative;
   overflow: hidden;
-}
-
-.artist-header-bg-debbie {
-  background: linear-gradient(135deg, #FDF8F6 0%, #FAF3F0 50%, #FDF8F6 100%);
-}
-
-.artist-header-bg-betty {
-  background: linear-gradient(135deg, #F8F7FB 0%, #F3F1F8 50%, #F8F7FB 100%);
-}
-
-.artist-header-bg-tonni {
-  background: linear-gradient(135deg, #F5F7F5 0%, #EEF2EE 50%, #F5F7F5 100%);
-}
-
-.artist-header-bg-guest {
-  background: linear-gradient(135deg, #FAF7F2 0%, #F5F0E8 50%, #FAF7F2 100%);
 }
 
 .artist-header-bg::before {
@@ -39,7 +24,7 @@ section {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(ellipse at 30% 50%, rgba(212, 162, 79, 0.06) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 30% 50%, rgba(212, 162, 79, 0.08) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -81,11 +66,6 @@ section {
 .artwork-card {
   position: relative;
   cursor: pointer;
-}
-
-.artwork-card.featured {
-  grid-column: span 2;
-  grid-row: span 2;
 }
 
 .artwork-frame {
@@ -427,7 +407,7 @@ nav {
   .hero-headline {
     font-size: clamp(2.5rem, 12vw, 4rem);
   }
-
+  
   h2 {
     font-size: clamp(2rem, 8vw, 3.5rem);
   }
@@ -435,11 +415,6 @@ nav {
   .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-  }
-
-  .artwork-card.featured {
-    grid-column: span 2;
-    grid-row: span 1;
   }
 
   .price-tag {
@@ -465,7 +440,7 @@ nav {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
+  
   .scroll-hint {
     animation: none;
   }
