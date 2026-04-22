@@ -6,6 +6,8 @@ export interface Artwork {
   price: number;
   size: string;
   medium: string;
+  width: number;
+  height: number;
 }
 
 export interface Artist {

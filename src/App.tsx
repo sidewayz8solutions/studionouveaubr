@@ -7,6 +7,133 @@ import { artists } from './data/artists';
 
 gsap.registerPlugin(ScrollTrigger);
 
+interface ViewInRoomProps {
+  artwork: { image: string; title: string; size: string; width: number; height: number };
+  onClose: () => void;
+}
+
+function ViewInRoomModal({ artwork, onClose }: ViewInRoomProps) {
+  const [room, setRoom] = useState<'living' | 'bedroom' | 'dining'>('living');
+  const [pos, setPos] = useState({ x: 0, y: -40 });
+  const [dragging, setDragging] = useState(false);
+  const dragRef = useRef<{ startX: number; startY: number; initX: number; initY: number } | null>(null);
+  const sceneRef = useRef<HTMLDivElement>(null);
+
+  const aspect = artwork.width / artwork.height;
+  const maxW = 55;
+  const maxH = 50;
+  let artW = maxW;
+  let artH = artW / aspect;
+  if (artH > maxH) {
+    artH = maxH;
+    artW = artH * aspect;
+  }
+
+  const handleDown = (clientX: number, clientY: number) => {
+    setDragging(true);
+    dragRef.current = { startX: clientX, startY: clientY, initX: pos.x, initY: pos.y };
+  };
+
+  const handleMove = (clientX: number, clientY: number) => {
+    if (!dragging || !dragRef.current) return;
+    const dx = ((clientX - dragRef.current.startX) / (sceneRef.current?.offsetWidth || 1)) * 100;
+    const dy = ((clientY - dragRef.current.startY) / (sceneRef.current?.offsetHeight || 1)) * 100;
+    setPos({ x: dragRef.current.initX + dx, y: dragRef.current.initY + dy });
+  };
+
+  const handleUp = () => {
+    setDragging(false);
+    dragRef.current = null;
+  };
+
+  const roomBg: Record<string, string> = {
+    living: 'linear-gradient(180deg, #E8E2D9 0%, #DDD5C8 100%)',
+    bedroom: 'linear-gradient(180deg, #D5C8B8 0%, #CBBFAF 100%)',
+    dining: 'linear-gradient(180deg, #C8C8C0 0%, #B8B8B0 100%)',
+  };
+
+  return (
+    <div className="view-room-modal">
+      <div className="view-room-backdrop" onClick={onClose} />
+      <div className="view-room-content animate-fade-in">
+        <button className="view-room-close" onClick={onClose}>
+          <X className="w-5 h-5 text-studio-black" />
+        </button>
+
+        <div className="p-5 pb-2 flex items-center justify-between">
+          <div>
+            <h3 className="font-display font-bold text-xl text-studio-black">{artwork.title}</h3>
+            <p className="text-sm text-studio-black/60">{artwork.size} — Drag to move</p>
+          </div>
+        </div>
+
+        <div
+          ref={sceneRef}
+          className="relative w-full cursor-move select-none"
+          style={{ aspectRatio: '16/10', background: roomBg[room], overflow: 'hidden' }}
+          onMouseDown={(e) => handleDown(e.clientX, e.clientY)}
+          onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+          onMouseUp={handleUp}
+          onMouseLeave={handleUp}
+          onTouchStart={(e) => handleDown(e.touches[0].clientX, e.touches[0].clientY)}
+          onTouchMove={(e) => handleMove(e.touches[0].clientX, e.touches[0].clientY)}
+          onTouchEnd={handleUp}
+        >
+          {/* Wall texture */}
+          <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(0,0,0,0.03) 50px, rgba(0,0,0,0.03) 51px)' }} />
+
+          {/* Baseboard */}
+          <div className="absolute bottom-[18%] left-0 right-0 h-3 bg-white/60 border-t border-black/10" />
+
+          {/* Floor */}
+          <div className="absolute bottom-0 left-0 right-0 h-[18%]" style={{ background: 'linear-gradient(180deg, #9E8B7D 0%, #7D6B5D 100%)' }} />
+
+          {/* Sofa silhouette */}
+          <div className="absolute bottom-[18%] left-1/2 -translate-x-1/2 w-[55%] h-[22%]">
+            <div className="absolute bottom-0 left-0 right-0 h-[70%] bg-[#5A4D42] rounded-t-xl" />
+            <div className="absolute bottom-[50%] left-0 w-[15%] h-[60%] bg-[#4A3D32] rounded-t-lg" />
+            <div className="absolute bottom-[50%] right-0 w-[15%] h-[60%] bg-[#4A3D32] rounded-t-lg" />
+          </div>
+
+          {/* Artwork on wall */}
+          <div
+            className="absolute"
+            style={{
+              left: `calc(50% + ${pos.x}%)`,
+              top: `calc(35% + ${pos.y}%)`,
+              transform: 'translate(-50%, -50%)',
+              width: `${artW}%`,
+              zIndex: 10,
+            }}
+          >
+            <div className="bg-white p-2 shadow-2xl">
+              <img
+                src={artwork.image}
+                alt={artwork.title}
+                className="w-full block"
+                style={{ aspectRatio: aspect }}
+                draggable={false}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="room-selector">
+          {(['living', 'bedroom', 'dining'] as const).map((r) => (
+            <button
+              key={r}
+              className={`room-option ${room === r ? 'active' : ''}`}
+              onClick={() => setRoom(r)}
+            >
+              {r.charAt(0).toUpperCase() + r.slice(1)} Room
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Event data
 const upcomingEvent = {
   title: "Studio Nouveau's Spring Showcase",
@@ -19,8 +146,7 @@ const upcomingEvent = {
 function App() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [showEventPopup, setShowEventPopup] = useState(true);
-  const [viewRoomArtwork, setViewRoomArtwork] = useState<{image: string; title: string; size: string} | null>(null);
-  const [selectedRoom, setSelectedRoom] = useState<'cream' | 'blush' | 'sage'>('cream');
+  const [viewRoomArtwork, setViewRoomArtwork] = useState<{image: string; title: string; size: string; width: number; height: number} | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
 
@@ -201,14 +327,8 @@ function App() {
     }).format(price);
   };
 
-  const getAspectRatio = (size: string) => {
-    const match = size.match(/(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)/);
-    if (match) {
-      const w = parseFloat(match[1]);
-      const h = parseFloat(match[2]);
-      if (w && h) return w / h;
-    }
-    return 1;
+  const getAspectRatio = (artwork: { width: number; height: number }) => {
+    return artwork.width / artwork.height;
   };
 
   return (
@@ -367,7 +487,7 @@ function App() {
                           src={artwork.image} 
                           alt={artwork.title}
                           className="artwork-image"
-                          style={{ aspectRatio: getAspectRatio(artwork.size) }}
+                          style={{ aspectRatio: getAspectRatio(artwork) }}
                         />
                         
                         {/* Price Tag */}
@@ -405,49 +525,10 @@ function App() {
 
       {/* View in Room Modal */}
       {viewRoomArtwork && (
-        <div className="view-room-modal">
-          <div className="view-room-backdrop" onClick={() => setViewRoomArtwork(null)} />
-          <div className="view-room-content animate-fade-in">
-            <button
-              className="view-room-close"
-              onClick={() => setViewRoomArtwork(null)}
-            >
-              <X className="w-5 h-5 text-studio-black" />
-            </button>
-
-            <div className="p-6 pb-4">
-              <h3 className="font-display font-bold text-2xl text-studio-black">{viewRoomArtwork.title}</h3>
-              <p className="text-studio-black/70">{viewRoomArtwork.size}</p>
-            </div>
-
-            <div className={`room-scene room-wall-${selectedRoom}`}>
-              <div className="room-wall">
-                <div className="room-artwork-container">
-                  <img
-                    src={viewRoomArtwork.image}
-                    alt={viewRoomArtwork.title}
-                    className="room-artwork-image"
-                    style={{ aspectRatio: getAspectRatio(viewRoomArtwork.size) }}
-                  />
-                </div>
-              </div>
-              <div className="room-furniture" />
-              <div className="room-floor" />
-            </div>
-
-            <div className="room-selector">
-              {(['cream', 'blush', 'sage'] as const).map((room) => (
-                <button
-                  key={room}
-                  className={`room-option ${selectedRoom === room ? 'active' : ''}`}
-                  onClick={() => setSelectedRoom(room)}
-                >
-                  {room.charAt(0).toUpperCase() + room.slice(1)} Room
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+        <ViewInRoomModal
+          artwork={viewRoomArtwork}
+          onClose={() => setViewRoomArtwork(null)}
+        />
       )}
 
       {/* Section: About / Studio */}

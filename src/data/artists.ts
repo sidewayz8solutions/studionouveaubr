@@ -22,7 +22,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-tiger.jpg',
         price: 75,
         size: '11 x 9"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 903,
+        height: 1200
       },
       {
         id: 2,
@@ -30,7 +32,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-strutting-around.jpg',
         price: 150,
         size: '14 x 14"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 1193,
+        height: 1200
       },
       {
         id: 3,
@@ -38,7 +42,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-time-to-bloom.jpg',
         price: 300,
         size: '16 x 20"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 1200,
+        height: 900
       },
       {
         id: 4,
@@ -46,7 +52,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-sweet-nectar.jpg',
         price: 575,
         size: '24 x 24"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 1164,
+        height: 1200
       },
       {
         id: 5,
@@ -54,7 +62,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-waiting-and-watching.jpg',
         price: 575,
         size: '24 x 24"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 1103,
+        height: 1200
       },
       {
         id: 6,
@@ -62,7 +72,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-sunset-on-the-bayou.jpg',
         price: 700,
         size: '24 x 30"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 1200,
+        height: 968
       },
       {
         id: 7,
@@ -70,7 +82,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-springtime.jpg',
         price: 1200,
         size: '30 x 40"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 952,
+        height: 1200
       },
       {
         id: 8,
@@ -78,7 +92,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-its-a-party.jpg',
         price: 1200,
         size: '36 x 36"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 1198,
+        height: 1200
       },
       {
         id: 9,
@@ -86,7 +102,9 @@ export const artists: Artist[] = [
         image: '/images/debbie-sunflowers-in-south-dakota.jpg',
         price: 900,
         size: '30 x 30"',
-        medium: 'Mixed Media'
+        medium: 'Mixed Media',
+        width: 1148,
+        height: 1200
       },
     ]
   },
@@ -101,7 +119,9 @@ export const artists: Artist[] = [
         image: '/images/betty-amber-kaleidoscope.jpg',
         price: 2550,
         size: 'TBD',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1200,
+        height: 1190
       },
       {
         id: 27,
@@ -109,7 +129,9 @@ export const artists: Artist[] = [
         image: '/images/betty-dreamscape.jpg',
         price: 2450,
         size: '30 x 24"',
-        medium: 'Oil Pastel on Paper'
+        medium: 'Oil Pastel on Paper',
+        width: 952,
+        height: 1200
       },
       {
         id: 27,
@@ -117,7 +139,9 @@ export const artists: Artist[] = [
         image: '/images/betty-here-we-go-again.jpg',
         price: 1050,
         size: '24 x 18"',
-        medium: 'Acrylic and Inks on Paper'
+        medium: 'Acrylic and Inks on Paper',
+        width: 825,
+        height: 1200
       },
       {
         id: 28,
@@ -125,7 +149,9 @@ export const artists: Artist[] = [
         image: '/images/betty-through-the-marsh.jpg',
         price: 1100,
         size: '24 x 36"',
-        medium: 'Abstract Acrylic Landscape'
+        medium: 'Abstract Acrylic Landscape',
+        width: 1200,
+        height: 799
       },
       {
         id: 29,
@@ -133,7 +159,9 @@ export const artists: Artist[] = [
         image: '/images/betty-gagees-red-pitcher.jpg',
         price: 800,
         size: '30 x 24"',
-        medium: 'Oil Painting'
+        medium: 'Oil Painting',
+        width: 957,
+        height: 1200
       },
       {
         id: 30,
@@ -141,7 +169,9 @@ export const artists: Artist[] = [
         image: '/images/betty-blowing-in-the-wind.jpg',
         price: 1800,
         size: '40 x 30"',
-        medium: 'Abstract Acrylic'
+        medium: 'Abstract Acrylic',
+        width: 892,
+        height: 1200
       },
       {
         id: 31,
@@ -149,7 +179,9 @@ export const artists: Artist[] = [
         image: '/images/betty-fields-of-violet.jpg',
         price: 2200,
         size: '48 x 36"',
-        medium: 'Acrylic'
+        medium: 'Acrylic',
+        width: 1200,
+        height: 900
       },
       {
         id: 32,
@@ -157,7 +189,9 @@ export const artists: Artist[] = [
         image: '/images/betty-why-not-have-fun.jpg',
         price: 600,
         size: '24 x 18"',
-        medium: 'Acrylic and Archival Ink on Paper'
+        medium: 'Acrylic and Archival Ink on Paper',
+        width: 794,
+        height: 1200
       },
       {
         id: 33,
@@ -165,7 +199,9 @@ export const artists: Artist[] = [
         image: '/images/betty-travel-thru.jpg',
         price: 1500,
         size: '30 x 40"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 885,
+        height: 1200
       },
       {
         id: 34,
@@ -173,7 +209,9 @@ export const artists: Artist[] = [
         image: '/images/betty-waters-edge.jpg',
         price: 450,
         size: '14 x 12"',
-        medium: 'Pastel'
+        medium: 'Pastel',
+        width: 860,
+        height: 1200
       },
       {
         id: 35,
@@ -181,7 +219,9 @@ export const artists: Artist[] = [
         image: '/images/betty-almost-a-full-circle.jpg',
         price: 650,
         size: '24 x 18"',
-        medium: 'Acrylic and Ink on Paper'
+        medium: 'Acrylic and Ink on Paper',
+        width: 900,
+        height: 1200
       },
       {
         id: 36,
@@ -189,7 +229,9 @@ export const artists: Artist[] = [
         image: '/images/betty-action-please.jpg',
         price: 1250,
         size: '24 x 20"',
-        medium: 'Acrylic and Archival Ink on Paper'
+        medium: 'Acrylic and Archival Ink on Paper',
+        width: 900,
+        height: 1200
       },
       {
         id: 37,
@@ -197,7 +239,9 @@ export const artists: Artist[] = [
         image: '/images/betty-unexpected.jpg',
         price: 1150,
         size: '24 x 24"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1190,
+        height: 1200
       },
       {
         id: 38,
@@ -205,7 +249,9 @@ export const artists: Artist[] = [
         image: '/images/betty-morning-silence.jpg',
         price: 1950,
         size: '26 x 19"',
-        medium: 'Pastel on Paper'
+        medium: 'Pastel on Paper',
+        width: 830,
+        height: 1200
       },
       {
         id: 39,
@@ -213,7 +259,9 @@ export const artists: Artist[] = [
         image: '/images/betty-behind-the-door.jpg',
         price: 850,
         size: '24 x 18"',
-        medium: 'Acrylic'
+        medium: 'Acrylic',
+        width: 905,
+        height: 1200
       },
       {
         id: 40,
@@ -221,7 +269,9 @@ export const artists: Artist[] = [
         image: '/images/betty-moving-waters.jpg',
         price: 4250,
         size: '60 x 48"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 953,
+        height: 1200
       },
       {
         id: 41,
@@ -229,7 +279,9 @@ export const artists: Artist[] = [
         image: '/images/betty-feeling-misty.jpg',
         price: 2400,
         size: '40 x 24"',
-        medium: 'Abstract Acrylic'
+        medium: 'Abstract Acrylic',
+        width: 864,
+        height: 1200
       },
       {
         id: 42,
@@ -237,7 +289,9 @@ export const artists: Artist[] = [
         image: '/images/betty-burst-of-energy.jpg',
         price: 2550,
         size: '36 x 36"',
-        medium: 'Acrylic and Ink on Canvas'
+        medium: 'Acrylic and Ink on Canvas',
+        width: 1194,
+        height: 1200
       },
       {
         id: 43,
@@ -245,7 +299,9 @@ export const artists: Artist[] = [
         image: '/images/betty-catching-the-light.jpg',
         price: 2450,
         size: '40 x 34"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 963,
+        height: 1200
       },
       {
         id: 44,
@@ -253,7 +309,9 @@ export const artists: Artist[] = [
         image: '/images/betty-rainy-day.jpg',
         price: 4050,
         size: '24 x 18"',
-        medium: 'Acrylic'
+        medium: 'Acrylic',
+        width: 1200,
+        height: 1056
       },
     ]
   },
@@ -268,7 +326,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-the-winter-guard.jpg',
         price: 1200,
         size: '36 x 36"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1158,
+        height: 1200
       },
       {
         id: 18,
@@ -276,7 +336,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-pretty-in-pink.jpg',
         price: 450,
         size: '12 x 36"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1200,
+        height: 395
       },
       {
         id: 19,
@@ -284,7 +346,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-flowers-on-the-path.jpg',
         price: 1200,
         size: '30 x 40"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1200,
+        height: 884
       },
       {
         id: 20,
@@ -292,7 +356,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-the-secret-garden.jpg',
         price: 1200,
         size: '36 x 36"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1200,
+        height: 1193
       },
       {
         id: 21,
@@ -300,7 +366,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-at-the-arboretum.jpg',
         price: 400,
         size: '20 x 20"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1200,
+        height: 1199
       },
       {
         id: 22,
@@ -308,7 +376,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-colors-of-provence.jpg',
         price: 720,
         size: '24 x 30"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 759,
+        height: 1200
       },
       {
         id: 23,
@@ -316,7 +386,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-reflections.jpg',
         price: 720,
         size: 'TBD',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1200,
+        height: 953
       },
       {
         id: 24,
@@ -324,7 +396,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-bell-river.jpg',
         price: 1200,
         size: '36 x 36"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1200,
+        height: 1189
       },
       {
         id: 25,
@@ -332,7 +406,9 @@ export const artists: Artist[] = [
         image: '/images/tonni-at-night-on-the-seine.jpg',
         price: 1200,
         size: '36 x 36"',
-        medium: 'Acrylic on Canvas'
+        medium: 'Acrylic on Canvas',
+        width: 1200,
+        height: 1176
       },
     ]
   },
