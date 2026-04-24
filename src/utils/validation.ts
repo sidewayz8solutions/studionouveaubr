@@ -1,5 +1,3 @@
-import { Artist, Artwork } from '../types/artists';
-
 /**
  * Validation utilities for artist and artwork data
  * Ensures data integrity and provides meaningful error messages

@@ -1,120 +1,177 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, ArrowDown, Mail, MapPin, Calendar, Instagram, X, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowDown, ArrowUp, Mail, MapPin, Calendar, Instagram, X, Sparkles, Menu, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
+import Lenis from 'lenis';
 import './App.css';
-import { artists } from './data/artists';
+import { artists, getTotalArtworkCount } from './data/artists';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface ViewInRoomProps {
-  artwork: { image: string; title: string; size: string; width: number; height: number };
-  onClose: () => void;
+interface TiltCardProps {
+  children: React.ReactNode;
+  className?: string;
 }
 
-function ViewInRoomModal({ artwork, onClose }: ViewInRoomProps) {
-  const [room, setRoom] = useState<'living' | 'bedroom' | 'dining'>('living');
-  const [pos, setPos] = useState({ x: 0, y: -40 });
-  const [dragging, setDragging] = useState(false);
-  const dragRef = useRef<{ startX: number; startY: number; initX: number; initY: number } | null>(null);
-  const sceneRef = useRef<HTMLDivElement>(null);
+interface LightboxProps {
+  artwork: { image: string; title: string; size: string; medium: string; price: number; width: number; height: number };
+  artistName: string;
+  onClose: () => void;
+  onNext: () => void;
+  onPrev: () => void;
+  hasNext: boolean;
+  hasPrev: boolean;
+  onInquire: () => void;
+}
 
-  const aspect = artwork.width / artwork.height;
-  const maxW = 55;
-  const maxH = 50;
-  let artW = maxW;
-  let artH = artW / aspect;
-  if (artH > maxH) {
-    artH = maxH;
-    artW = artH * aspect;
-  }
+function TiltCard({ children, className = '' }: TiltCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const glareRef = useRef<HTMLDivElement>(null);
 
-  const handleDown = (clientX: number, clientY: number) => {
-    setDragging(true);
-    dragRef.current = { startX: clientX, startY: clientY, initX: pos.x, initY: pos.y };
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -12;
+    const rotateY = ((x - centerX) / centerX) * 12;
+    cardRef.current.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+    if (glareRef.current) {
+      glareRef.current.style.background = `radial-gradient(circle at ${(x/rect.width)*100}% ${(y/rect.height)*100}%, rgba(255,255,255,0.2) 0%, transparent 55%)`;
+      glareRef.current.style.opacity = '1';
+    }
   };
 
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!dragging || !dragRef.current) return;
-    const dx = ((clientX - dragRef.current.startX) / (sceneRef.current?.offsetWidth || 1)) * 100;
-    const dy = ((clientY - dragRef.current.startY) / (sceneRef.current?.offsetHeight || 1)) * 100;
-    setPos({ x: dragRef.current.initX + dx, y: dragRef.current.initY + dy });
-  };
-
-  const handleUp = () => {
-    setDragging(false);
-    dragRef.current = null;
-  };
-
-  const roomImages: Record<string, string> = {
-    living: '/images/rooms/living-room.jpg',
-    bedroom: '/images/rooms/bedroom.jpg',
-    dining: '/images/rooms/dining-room.jpg',
+  const handleMouseLeave = () => {
+    if (cardRef.current) cardRef.current.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    if (glareRef.current) glareRef.current.style.opacity = '0';
   };
 
   return (
-    <div className="view-room-modal">
-      <div className="view-room-backdrop" onClick={onClose} />
-      <div className="view-room-content animate-fade-in">
-        <button className="view-room-close" onClick={onClose}>
-          <X className="w-5 h-5 text-studio-black" />
-        </button>
+    <div className={`tilt-card-container ${className}`} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+      <div ref={cardRef} className="tilt-card">
+        <div className="tilt-card-inner">
+          {children}
+          <div ref={glareRef} className="tilt-card-glare" style={{ opacity: 0 }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
-        <div className="p-5 pb-2 flex items-center justify-between">
-          <div>
-            <h3 className="font-display font-bold text-xl text-studio-black">{artwork.title}</h3>
-            <p className="text-sm text-studio-black/60">{artwork.size} — Drag to move</p>
+function FadeImage({ src, alt, className = '', style, loading, onClick }: React.ImgHTMLAttributes<HTMLImageElement>) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+  return (
+    <div className="relative w-full h-full" style={style}>
+      {!error && (
+        <img
+          src={src}
+          alt={alt}
+          className={`${className} transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          style={{ ...style, position: 'absolute', inset: 0 }}
+          loading={loading}
+          onClick={onClick}
+          onLoad={() => setLoaded(true)}
+          onError={() => setError(true)}
+        />
+      )}
+      {(!loaded || error) && (
+        <div 
+          className="absolute inset-0 flex items-center justify-center bg-studio-black/5"
+          style={{ aspectRatio: style?.aspectRatio }}
+        >
+          <div className="text-center px-4">
+            <div className="font-display font-bold text-lg text-studio-gold/40 mb-1">{alt}</div>
+            <div className="font-mono text-xs text-studio-gray/40 tracking-wider">COMING SOON</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Lightbox({ artwork, artistName, onClose, onNext, onPrev, hasNext, hasPrev, onInquire }: LightboxProps) {
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' && hasNext) onNext();
+      if (e.key === 'ArrowLeft' && hasPrev) onPrev();
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [hasNext, hasPrev, onNext, onPrev, onClose]);
+
+  const aspect = artwork.width / artwork.height;
+  const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(artwork.price);
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-studio-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8">
+      <div className="absolute inset-0" onClick={onClose} />
+
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center bg-studio-white/10 hover:bg-studio-gold text-studio-white hover:text-studio-black transition-colors rounded-full"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      {/* Prev button */}
+      {hasPrev && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onPrev(); }}
+          className="absolute left-2 md:left-6 z-20 w-10 h-10 flex items-center justify-center bg-studio-white/10 hover:bg-studio-gold text-studio-white hover:text-studio-black transition-colors rounded-full"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+      )}
+
+      {/* Next button */}
+      {hasNext && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNext(); }}
+          className="absolute right-2 md:right-6 z-20 w-10 h-10 flex items-center justify-center bg-studio-white/10 hover:bg-studio-gold text-studio-white hover:text-studio-black transition-colors rounded-full"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      )}
+
+      {/* Modal Card */}
+      <div className="relative z-10 w-full max-w-2xl bg-[#F4F2EE] rounded-sm shadow-2xl overflow-hidden">
+        {/* Framed Painting */}
+        <div className="p-6 md:p-10 bg-white">
+          <div className="relative bg-[#f8f8f8] shadow-inner">
+            <FadeImage
+              src={artwork.image}
+              alt={artwork.title}
+              className="w-full object-contain"
+              style={{ aspectRatio: aspect, maxHeight: '55vh' }}
+            />
           </div>
         </div>
 
-        <div
-          ref={sceneRef}
-          className="relative w-full cursor-move select-none room-photo-scene"
-          style={{ backgroundImage: `url(${roomImages[room]})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-          onMouseDown={(e) => handleDown(e.clientX, e.clientY)}
-          onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
-          onMouseUp={handleUp}
-          onMouseLeave={handleUp}
-          onTouchStart={(e) => handleDown(e.touches[0].clientX, e.touches[0].clientY)}
-          onTouchMove={(e) => handleMove(e.touches[0].clientX, e.touches[0].clientY)}
-          onTouchEnd={handleUp}
-        >
-          {/* Subtle shadow overlay for depth */}
-          <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 80px rgba(0,0,0,0.15)' }} />
-
-          {/* Artwork on wall */}
-          <div
-            className="absolute"
-            style={{
-              left: `calc(50% + ${pos.x}%)`,
-              top: `calc(42% + ${pos.y}%)`,
-              transform: 'translate(-50%, -50%)',
-              width: `${artW}%`,
-              zIndex: 10,
-            }}
-          >
-            <div className="room-artwork-frame">
-              <img
-                src={artwork.image}
-                alt={artwork.title}
-                className="w-full block"
-                style={{ aspectRatio: aspect }}
-                draggable={false}
-              />
+        {/* Details Bar */}
+        <div className="px-6 md:px-10 py-5 md:py-6 border-t border-studio-black/5">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-studio-gold uppercase">{artistName}</p>
+              <h3 className="font-display font-bold text-xl md:text-2xl text-studio-black leading-tight mt-0.5">{artwork.title}</h3>
+              <p className="text-sm text-studio-gray mt-1">{artwork.medium} &middot; {artwork.size}</p>
+            </div>
+            <div className="flex flex-col items-start md:items-end gap-2">
+              <p className="font-display font-bold text-2xl md:text-3xl text-studio-gold">{formattedPrice}</p>
+              <button
+                onClick={onInquire}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-studio-black text-studio-white font-mono text-xs tracking-wider hover:bg-studio-gold hover:text-studio-black transition-colors"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                Inquire to Purchase
+              </button>
             </div>
           </div>
-        </div>
-
-        <div className="room-selector">
-          {(['living', 'bedroom', 'dining'] as const).map((r) => (
-            <button
-              key={r}
-              className={`room-option ${room === r ? 'active' : ''}`}
-              onClick={() => setRoom(r)}
-            >
-              {r.charAt(0).toUpperCase() + r.slice(1)} Room
-            </button>
-          ))}
         </div>
       </div>
     </div>
@@ -130,22 +187,357 @@ const upcomingEvent = {
   description: 'Join us for our biggest event of the season! Meet the artists, view new original works, and enjoy light refreshments. Special discounts available during the event.',
 };
 
+/** Parse physical dimensions from size string like "24 x 30\"" */
+const parsePhysicalSize = (size: string): { w: number; h: number } | null => {
+  const match = size.match(/(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)/);
+  if (!match) return null;
+  return { w: parseFloat(match[1]), h: parseFloat(match[2]) };
+};
+
+/** Compute display size scaled so largest dimension = maxDim px, using pixel aspect ratio */
+const getDisplaySize = (pixelWidth: number, pixelHeight: number, maxDim = 340): { width: number; height: number; framePadding: number } => {
+  const aspect = pixelWidth / pixelHeight;
+  let width = maxDim;
+  let height = Math.round(maxDim / aspect);
+  if (height > maxDim) {
+    height = maxDim;
+    width = Math.round(maxDim * aspect);
+  }
+  const framePadding = Math.max(4, Math.min(14, Math.round(Math.min(width, height) * 0.04)));
+  return { width, height, framePadding };
+};
+
+/** Responsive max dimension based on viewport */
+const useResponsiveMaxDim = (base: number) => {
+  const [maxDim, setMaxDim] = useState(base);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 640) setMaxDim(base * 0.55);
+      else if (w < 768) setMaxDim(base * 0.7);
+      else setMaxDim(base);
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [base]);
+  return maxDim;
+};
+
+function MagneticButton({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const boundingRef = useRef<DOMRect | null>(null);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!btnRef.current || !boundingRef.current) return;
+    const { clientX, clientY } = e;
+    const { left, top, width, height } = boundingRef.current;
+    const x = clientX - (left + width / 2);
+    const y = clientY - (top + height / 2);
+    btnRef.current.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (btnRef.current) {
+      btnRef.current.style.transform = 'translate(0px, 0px)';
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (btnRef.current) {
+      boundingRef.current = btnRef.current.getBoundingClientRect();
+    }
+  };
+
+  return (
+    <button
+      ref={btnRef}
+      className={`transition-transform duration-200 ease-out ${className}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
+function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: string }) {
+  const [display, setDisplay] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated.current) {
+            hasAnimated.current = true;
+            const duration = 1500;
+            const start = performance.now();
+            const animate = (now: number) => {
+              const progress = Math.min((now - start) / duration, 1);
+              const eased = 1 - Math.pow(1 - progress, 3);
+              setDisplay(Math.round(eased * value));
+              if (progress < 1) requestAnimationFrame(animate);
+            };
+            requestAnimationFrame(animate);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [value]);
+
+  return <div ref={ref}>{display}{suffix}</div>;
+}
+
+function CustomCursor() {
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: 0, y: 0 });
+  const target = useRef({ x: 0, y: 0 });
+  const [hovering, setHovering] = useState(false);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      target.current = { x: e.clientX, y: e.clientY };
+    };
+    const onOver = (e: MouseEvent) => {
+      const el = e.target as HTMLElement;
+      if (el.closest('a, button, [role="button"], .artwork-card, .gallery-photo, input, textarea, select')) {
+        setHovering(true);
+      }
+    };
+    const onOut = (e: MouseEvent) => {
+      const el = e.target as HTMLElement;
+      if (el.closest('a, button, [role="button"], .artwork-card, .gallery-photo, input, textarea, select')) {
+        setHovering(false);
+      }
+    };
+
+    let raf: number;
+    const animate = () => {
+      pos.current.x += (target.current.x - pos.current.x) * 0.15;
+      pos.current.y += (target.current.y - pos.current.y) * 0.15;
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${pos.current.x}px, ${pos.current.y}px) translate(-50%, -50%)`;
+      }
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${target.current.x}px, ${target.current.y}px) translate(-50%, -50%)`;
+      }
+      raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+
+    window.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseover', onOver);
+    document.addEventListener('mouseout', onOut);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseover', onOver);
+      document.removeEventListener('mouseout', onOut);
+    };
+  }, []);
+
+  return (
+    <>
+      <div
+        ref={cursorRef}
+        className={`fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block rounded-full border transition-[width,height,border-color] duration-300 ease-out ${
+          hovering ? 'w-12 h-12 border-studio-gold/60' : 'w-8 h-8 border-studio-gold/30'
+        }`}
+        style={{ mixBlendMode: 'difference' }}
+      />
+      <div
+        ref={dotRef}
+        className="fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block w-1 h-1 bg-studio-gold rounded-full"
+      />
+    </>
+  );
+}
+
+function ParallaxSign() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const layersRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current || !layersRef.current) return;
+    const layers = layersRef.current.querySelectorAll('.parallax-sign-layer');
+    
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1.5,
+      }
+    });
+
+    tl.fromTo(layers, 
+      { z: -100, opacity: 0.3 },
+      { z: 80, opacity: 1, stagger: 0.05, ease: 'none' }
+    );
+
+    return () => {
+      tl.kill();
+    };
+  }, []);
+
+  return (
+    <section 
+      ref={sectionRef}
+      className="relative z-20 bg-studio-black py-20 md:py-32 overflow-hidden"
+    >
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[800px] h-[300px] bg-studio-gold/[0.03] rounded-full blur-3xl" />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20">
+        <div 
+          ref={layersRef}
+          className="relative flex flex-col items-center justify-center text-center"
+          style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
+        >
+          {['Studio', 'Nouveau'].map((word) => (
+            <div key={word} className="relative my-[-0.1em]" style={{ transformStyle: 'preserve-3d' }}>
+              {[0, 1, 2].map((layer) => (
+                <div
+                  key={layer}
+                  className={`parallax-sign-layer font-display font-black tracking-tighter leading-none ${layer === 0 ? 'relative text-studio-gold' : 'absolute inset-0 text-studio-gold/[0.12]'}`}
+                  style={{
+                    fontSize: 'clamp(4rem, 14vw, 12rem)',
+                    transform: `translateZ(${(2 - layer) * 30}px)`,
+                    textShadow: layer === 0 ? '0 0 80px rgba(212, 162, 79, 0.25), 0 8px 30px rgba(0,0,0,0.6)' : 'none',
+                  }}
+                >
+                  {word}
+                </div>
+              ))}
+            </div>
+          ))}
+          
+          <div className="mt-8 font-mono text-xs tracking-[0.35em] text-studio-gray/50 uppercase">
+            Baton Rouge • Est. 2024
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const [showEventPopup, setShowEventPopup] = useState(true);
-  const [viewRoomArtwork, setViewRoomArtwork] = useState<{image: string; title: string; size: string; width: number; height: number} | null>(null);
+  const [showEventPopup, setShowEventPopup] = useState(() => {
+    const dismissed = localStorage.getItem('eventPopupDismissed');
+    return dismissed !== 'true';
+  });
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
+
+  // Flatten all artworks for lightbox navigation
+  const allArtworks = artists.flatMap(artist => artist.artworks.map(art => ({ ...art, artistName: artist.name })));
+  const currentLightboxArtwork = lightboxIndex !== null ? allArtworks[lightboxIndex] : null;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [selectedMedium, setSelectedMedium] = useState<string>('All');
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [galleryLightboxIndex, setGalleryLightboxIndex] = useState<number | null>(null);
+  const [pageLoaded, setPageLoaded] = useState(false);
   const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
+  const lenisRef = useRef<Lenis | null>(null);
+  const galleryMaxDim = useResponsiveMaxDim(400);
+
+  // Get all unique mediums
+  const allMediums = ['All', ...Array.from(new Set(allArtworks.map(a => a.medium))).sort()];
+
+  // Page loader
+  useEffect(() => {
+    const timer = setTimeout(() => setPageLoaded(true), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Keyboard and scroll lock effects
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (galleryLightboxIndex !== null) {
+          setGalleryLightboxIndex(null);
+        } else if (lightboxIndex !== null) {
+          setLightboxIndex(null);
+        } else if (showEventPopup) {
+          localStorage.setItem('eventPopupDismissed', 'true');
+          setShowEventPopup(false);
+        } else if (mobileMenuOpen) {
+          setMobileMenuOpen(false);
+        }
+      }
+      if (e.key === 'ArrowRight' && galleryLightboxIndex !== null) {
+        setGalleryLightboxIndex(Math.min(galleryLightboxIndex + 1, 8));
+      }
+      if (e.key === 'ArrowLeft' && galleryLightboxIndex !== null) {
+        setGalleryLightboxIndex(Math.max(galleryLightboxIndex - 1, 0));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [galleryLightboxIndex, lightboxIndex, showEventPopup, mobileMenuOpen]);
+
+  useEffect(() => {
+    if (galleryLightboxIndex !== null || lightboxIndex !== null || mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [galleryLightboxIndex, lightboxIndex, mobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 80);
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalHeight > 0 ? window.scrollY / totalHeight : 0;
+      setScrollProgress(progress);
+      setShowBackToTop(window.scrollY > 800);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     const popupTimer = setTimeout(() => {
       setShowEventPopup(true);
     }, 1500);
+
+    // Lenis smooth scrolling
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+    lenisRef.current = lenis;
+
+    lenis.on('scroll', ScrollTrigger.update);
+
+    // Scroll-velocity skew effect
+    let currentSkew = 0;
+    lenis.on('scroll', ({ velocity }: { velocity: number }) => {
+      const targetSkew = Math.max(-2, Math.min(2, velocity * 0.02));
+      currentSkew += (targetSkew - currentSkew) * 0.1;
+      const skewElements = document.querySelectorAll('.velocity-skew');
+      skewElements.forEach((el) => {
+        (el as HTMLElement).style.transform = `skewY(${currentSkew}deg)`;
+      });
+    });
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
 
     const ctx = gsap.context(() => {
       // Hero entrance animation
@@ -211,14 +603,77 @@ function App() {
           0.75
         )
         .fromTo('.hero-bg', 
-          { scale: 1, x: 0 }, 
-          { scale: 1.06, x: '-2vw', ease: 'power2.in' }, 
+          { scale: 1, x: 0, y: 0 }, 
+          { scale: 1.06, x: '-2vw', y: '-3vh', ease: 'power2.in' }, 
           0.7
+        )
+        .fromTo('.hero-label',
+          { y: 0, opacity: 1 },
+          { y: '-5vh', opacity: 0, ease: 'power2.in' },
+          0.6
         );
+
+      // Hero parallax depth layers
+      gsap.to('.hero-headline', {
+        y: '-15vh',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        }
+      });
+      gsap.to('.hero-subheadline', {
+        y: '-8vh',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        }
+      });
 
       if (heroScrollTl.scrollTrigger) {
         scrollTriggersRef.current.push(heroScrollTl.scrollTrigger);
       }
+
+      // Clip-path reveal animations for artwork frames
+      const revealFrames = gsap.utils.toArray<HTMLElement>('[data-reveal]');
+      revealFrames.forEach((frame) => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: frame,
+            start: 'top 90%',
+            toggleActions: 'play none none none',
+          }
+        });
+        tl.fromTo(frame,
+          { clipPath: 'inset(100% 0 0 0)' },
+          { clipPath: 'inset(0% 0 0 0)', duration: 1.2, ease: 'power3.inOut' }
+        );
+        if (tl.scrollTrigger) {
+          scrollTriggersRef.current.push(tl.scrollTrigger);
+        }
+      });
+
+      // 3D perspective tilt on scroll for gallery sections
+      const gallerySections = gsap.utils.toArray<HTMLElement>('.artist-gallery-section');
+      gallerySections.forEach((section) => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.5,
+          }
+        });
+        tl.fromTo(section.querySelector('.gallery-container'),
+          { rotateX: 3 },
+          { rotateX: -3, ease: 'none' }
+        );
+      });
 
       // Artist section animations
       artists.forEach((_, artistIndex) => {
@@ -291,6 +746,26 @@ function App() {
         scrollTriggersRef.current.push(contactTl.scrollTrigger);
       }
 
+      // Gallery photos animation
+      const galleryPhotos = gsap.utils.toArray<HTMLElement>('.gallery-photo');
+      galleryPhotos.forEach((photo) => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: photo,
+            start: 'top 85%',
+            end: 'top 60%',
+            scrub: 0.3,
+          }
+        });
+        tl.fromTo(photo, 
+          { y: 30, opacity: 0, scale: 0.95 }, 
+          { y: 0, opacity: 1, scale: 1, ease: 'power2.out' }
+        );
+        if (tl.scrollTrigger) {
+          scrollTriggersRef.current.push(tl.scrollTrigger);
+        }
+      });
+
     });
 
     return () => {
@@ -299,11 +774,17 @@ function App() {
       scrollTriggersRef.current.forEach(st => st.kill());
       scrollTriggersRef.current = [];
       ctx.revert();
+      lenis.destroy();
     };
   }, []);
 
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    setMobileMenuOpen(false);
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(`#${id}`, { offset: 0 });
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -314,21 +795,40 @@ function App() {
     }).format(price);
   };
 
-  const getAspectRatio = (artwork: { width: number; height: number }) => {
-    return artwork.width / artwork.height;
-  };
-
   return (
     <div className="relative">
+      {/* Page Loader */}
+      {!pageLoaded && (
+        <div className="fixed inset-0 z-[200] bg-studio-black flex items-center justify-center transition-opacity duration-700">
+          <div className="text-center">
+            <div className="font-display font-black text-4xl md:text-5xl text-studio-white tracking-tight mb-2 animate-pulse">
+              Studio Nouveau
+            </div>
+            <div className="font-mono text-xs tracking-[0.3em] text-studio-gold uppercase">
+              Loading
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Grain overlay */}
       <div className="grain-overlay" />
 
       {/* Event Popup */}
       {showEventPopup && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-studio-cream max-w-lg w-full relative animate-fade-in">
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => {
+            localStorage.setItem('eventPopupDismissed', 'true');
+            setShowEventPopup(false);
+          }}
+        >
+          <div className="bg-studio-cream max-w-lg w-full relative animate-fade-in" onClick={(e) => e.stopPropagation()}>
             <button 
-              onClick={() => setShowEventPopup(false)}
+              onClick={() => {
+                localStorage.setItem('eventPopupDismissed', 'true');
+                setShowEventPopup(false);
+              }}
               className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-studio-black text-studio-white hover:bg-studio-gold transition-colors"
             >
               <X className="w-4 h-4" />
@@ -360,7 +860,10 @@ function App() {
               </p>
               
               <button 
-                onClick={() => setShowEventPopup(false)}
+                onClick={() => {
+                  localStorage.setItem('eventPopupDismissed', 'true');
+                  setShowEventPopup(false);
+                }}
                 className="w-full bg-studio-black text-studio-white py-4 font-display font-semibold tracking-wide hover:bg-studio-gold hover:text-studio-black transition-colors duration-300"
               >
                 CLOSE
@@ -369,6 +872,12 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Scroll Progress */}
+      <div 
+        className="fixed top-0 left-0 h-[2px] bg-studio-gold z-[60] transition-[width] duration-150"
+        style={{ width: `${scrollProgress * 100}%` }}
+      />
 
       {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-300 ${scrolled ? 'bg-studio-black/90 backdrop-blur-md' : 'bg-gradient-to-b from-studio-black/80 to-transparent'}`}>
@@ -386,12 +895,34 @@ function App() {
             Contact
           </button>
         </div>
+        <button 
+          className="md:hidden text-studio-white p-2"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </nav>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-studio-black/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8 animate-fade-in md:hidden">
+          <button onClick={() => scrollToSection('artists')} className="font-display text-3xl text-studio-white hover:text-studio-gold transition-colors">
+            Artists
+          </button>
+          <button onClick={() => scrollToSection('about')} className="font-display text-3xl text-studio-white hover:text-studio-gold transition-colors">
+            About
+          </button>
+          <button onClick={() => scrollToSection('contact')} className="font-display text-3xl text-studio-white hover:text-studio-gold transition-colors">
+            Contact
+          </button>
+        </div>
+      )}
 
       {/* Section 1: Hero */}
       <section ref={heroRef} className="section-pinned z-10">
         <div className="hero-bg absolute inset-0">
-          <img 
+          <FadeImage 
             src="/images/studio-exterior.jpg" 
             alt="Studio Nouveau" 
             className="w-full h-full object-cover"
@@ -417,13 +948,13 @@ function App() {
               Four artists. One vision. Original paintings and creative works crafted with passion and precision.
             </p>
             
-            <button 
+            <MagneticButton 
               onClick={() => scrollToSection('artists')}
               className="hero-cta cta-link group"
             >
               <span>Explore work</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
+            </MagneticButton>
           </div>
         </div>
         
@@ -433,9 +964,35 @@ function App() {
         </div>
       </section>
 
+      <ParallaxSign />
+
+      {/* Medium Filter */}
+      <div className="sticky top-[72px] z-30 bg-studio-black/90 backdrop-blur-md border-b border-studio-white/5">
+        <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-3">
+          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
+            <span className="font-mono text-xs tracking-wider text-studio-gray/60 whitespace-nowrap">FILTER:</span>
+            {allMediums.map((medium) => (
+              <button
+                key={medium}
+                onClick={() => setSelectedMedium(medium)}
+                className={`px-3 py-1.5 rounded-full text-xs font-mono tracking-wider whitespace-nowrap transition-colors ${
+                  selectedMedium === medium
+                    ? 'bg-studio-gold text-studio-black'
+                    : 'bg-studio-white/5 text-studio-gray hover:bg-studio-white/10 hover:text-studio-white'
+                }`}
+              >
+                {medium}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Artist Sections */}
       <div id="artists" className="relative z-20">
-        {artists.map((artist, artistIndex) => (
+        {artists.map((artist, artistIndex) => {
+          const filteredArtworks = selectedMedium === 'All' ? artist.artworks : artist.artworks.filter(a => a.medium === selectedMedium);
+          return (
           <section 
             key={artist.name} 
             id={`artist-${artistIndex}`}
@@ -443,7 +1000,7 @@ function App() {
           >
             {/* Artist Header with Full Width Background */}
             <div className="artist-header-bg">
-              <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-16 md:py-24">
+              <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 py-16 md:py-24">
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
                   <div>
                     <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-3 opacity-75">
@@ -462,59 +1019,85 @@ function App() {
 
             {/* Gallery Grid - Modern Museum Style */}
             <div className="gallery-container">
-              <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-12 md:py-16">
-                <div className="gallery-grid">
-                  {artist.artworks.map((artwork) => (
-                    <div 
-                      key={artwork.id} 
-                      className="artwork-card"
-                    >
-                      <div className="artwork-frame">
-                        <img 
-                          src={artwork.image} 
-                          alt={artwork.title}
-                          className="artwork-image"
-                          style={{ aspectRatio: getAspectRatio(artwork) }}
-                        />
-                        
-                        {/* Price Tag */}
-                        <div className="price-tag">
-                          <span className="price">{formatPrice(artwork.price)}</span>
-                        </div>
-                        
-                        {/* Hover Overlay */}
-                        <div className="artwork-overlay">
-                          <div className="overlay-content">
-                            <h3 className="artwork-title">{artwork.title}</h3>
-                            <p className="artwork-details">{artwork.medium} • {artwork.size}</p>
-                            <button className="inquire-btn">Inquire</button>
-                            <button
-                              className="view-room-btn"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setViewRoomArtwork(artwork);
-                                setSelectedRoom('cream');
-                              }}
-                            >
-                              View in Room
-                            </button>
+              <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 py-12 md:py-16">
+                {filteredArtworks.length > 0 ? (
+                  <div className="gallery-grid perspective-container">
+                    {filteredArtworks.map((artwork) => {
+                      const dims = getDisplaySize(artwork.width, artwork.height, galleryMaxDim);
+                      return (
+                        <TiltCard key={artwork.id} className="artwork-card velocity-skew">
+                          <div 
+                            className="artwork-frame clip-reveal cursor-pointer"
+                            style={{ padding: dims.framePadding, width: Math.max(dims.width, 180), maxWidth: '100%' }}
+                            data-reveal
+                            onClick={() => {
+                              const idx = allArtworks.findIndex(a => a.id === artwork.id);
+                              if (idx !== -1) setLightboxIndex(idx);
+                            }}
+                          >
+                            <FadeImage 
+                              src={artwork.image} 
+                              alt={artwork.title}
+                              className="artwork-image"
+                              style={{ aspectRatio: artwork.width / artwork.height }}
+                              loading="lazy"
+                            />
+                            
+                            {/* Price Tag */}
+                            <div className="price-tag pointer-events-none" style={{ top: dims.framePadding, right: dims.framePadding }}>
+                              <span className="price">{formatPrice(artwork.price)}</span>
+                            </div>
+                            
+                            {/* Hover Overlay */}
+                            <div className="artwork-overlay" style={{ inset: dims.framePadding }}>
+                              <div className="overlay-content">
+                                <h3 className="artwork-title">{artwork.title}</h3>
+                                <p className="artwork-details">{artwork.medium} &middot; {artwork.size}</p>
+                                <p className="font-mono text-sm text-studio-gold mb-3">{formatPrice(artwork.price)}</p>
+                                <button 
+                                  className="inquire-btn pointer-events-auto"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    scrollToSection('contact');
+                                  }}
+                                >
+                                  Inquire
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                        </TiltCard>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-20">
+                    <div className="font-mono text-xs tracking-[0.2em] text-studio-gold mb-4">COMING SOON</div>
+                    <p className="text-studio-gray max-w-md mx-auto leading-relaxed">
+                      New works from this artist will be featured soon. Visit us in person to see what's currently on display.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </section>
-        ))}
+        );})}
       </div>
 
-      {/* View in Room Modal */}
-      {viewRoomArtwork && (
-        <ViewInRoomModal
-          artwork={viewRoomArtwork}
-          onClose={() => setViewRoomArtwork(null)}
+      {/* Artwork Lightbox */}
+      {currentLightboxArtwork && lightboxIndex !== null && (
+        <Lightbox
+          artwork={currentLightboxArtwork}
+          artistName={currentLightboxArtwork.artistName}
+          onClose={() => setLightboxIndex(null)}
+          onNext={() => setLightboxIndex(Math.min(lightboxIndex + 1, allArtworks.length - 1))}
+          onPrev={() => setLightboxIndex(Math.max(lightboxIndex - 1, 0))}
+          hasNext={lightboxIndex < allArtworks.length - 1}
+          hasPrev={lightboxIndex > 0}
+          onInquire={() => {
+            setLightboxIndex(null);
+            setTimeout(() => scrollToSection('contact'), 100);
+          }}
         />
       )}
 
@@ -524,10 +1107,11 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="about-image">
               <div className="relative">
-                <img 
+                <FadeImage 
                   src="/images/studio-exterior.jpg" 
                   alt="Studio Nouveau Exterior" 
                   className="w-full aspect-[4/5] object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border border-studio-gold/30" />
                 <div className="absolute -top-6 -left-6 w-32 h-32 border border-studio-gold/30" />
@@ -561,15 +1145,21 @@ function App() {
               
               <div className="flex flex-wrap gap-8 mt-10 pt-10 border-t border-studio-white/10">
                 <div>
-                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">3</div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">
+                    <AnimatedCounter value={artists.filter(a => a.artworks.length > 0).length} />
+                  </div>
                   <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">ARTISTS</div>
                 </div>
                 <div>
-                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">21+</div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">
+                    <AnimatedCounter value={getTotalArtworkCount()} />
+                  </div>
                   <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">ARTWORKS</div>
                 </div>
                 <div>
-                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">10+</div>
+                  <div className="font-display font-black text-3xl md:text-4xl text-studio-gold">
+                    <AnimatedCounter value={10} suffix="+" />
+                  </div>
                   <div className="font-mono text-xs tracking-wider text-studio-gray mt-1">YEARS</div>
                 </div>
               </div>
@@ -594,11 +1184,13 @@ function App() {
           </div>
           <div className="gallery-photos-grid">
             {[1,2,3,4,5,6,7,8,9].map((n) => (
-              <img
+              <FadeImage
                 key={n}
                 src={`/images/gallery-${n}.jpg`}
                 alt={`Studio interior ${n}`}
-                className="gallery-photo"
+                className="gallery-photo cursor-pointer hover:opacity-90 transition-opacity"
+                loading="lazy"
+                onClick={() => setGalleryLightboxIndex(n - 1)}
               />
             ))}
           </div>
@@ -686,67 +1278,144 @@ function App() {
             </div>
             
             <div className="contact-form">
-              <form className="bg-white p-8 md:p-10 shadow-lg">
-                <div className="space-y-6">
-                  <div>
-                    <label className="block font-mono text-xs tracking-wider text-studio-black/50 mb-2">
-                      NAME
-                    </label>
-                    <input 
-                      type="text" 
-                      placeholder="Your name"
-                      className="w-full bg-studio-cream/50 border-studio-black/10 text-studio-black placeholder:text-studio-black/30"
-                    />
+              {formStatus === 'success' ? (
+                <div className="bg-white p-8 md:p-10 shadow-lg text-center animate-fade-in">
+                  <div className="w-16 h-16 rounded-full bg-studio-gold/10 flex items-center justify-center mx-auto mb-6">
+                    <Sparkles className="w-8 h-8 text-studio-gold" />
                   </div>
-                  
-                  <div>
-                    <label className="block font-mono text-xs tracking-wider text-studio-black/50 mb-2">
-                      EMAIL
-                    </label>
-                    <input 
-                      type="email" 
-                      placeholder="your@email.com"
-                      className="w-full bg-studio-cream/50 border-studio-black/10 text-studio-black placeholder:text-studio-black/30"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block font-mono text-xs tracking-wider text-studio-black/50 mb-2">
-                      INTEREST
-                    </label>
-                    <select className="w-full bg-studio-cream/50 border-studio-black/10 text-studio-black">
-                      <option value="">Select an option</option>
-                      <option value="purchase">Purchase Artwork</option>
-                      <option value="commission">Commission a Piece</option>
-                      <option value="event">RSVP for Spring Showcase</option>
-                      <option value="visit">Schedule a Visit</option>
-                      <option value="other">Other Inquiry</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block font-mono text-xs tracking-wider text-studio-black/50 mb-2">
-                      MESSAGE
-                    </label>
-                    <textarea 
-                      rows={4}
-                      placeholder="Tell us about your project or inquiry..."
-                      className="w-full bg-studio-cream/50 border-studio-black/10 text-studio-black placeholder:text-studio-black/30 resize-none"
-                    />
-                  </div>
-                  
+                  <h3 className="font-display font-bold text-2xl text-studio-black mb-3">Message Sent!</h3>
+                  <p className="text-studio-black/70 leading-relaxed mb-6">
+                    Thank you for reaching out. We'll get back to you within 24 hours.
+                  </p>
                   <button 
-                    type="submit"
-                    className="w-full bg-studio-black text-studio-white py-4 font-display font-semibold tracking-wide hover:bg-studio-gold hover:text-studio-black transition-colors duration-300"
+                    onClick={() => setFormStatus('idle')}
+                    className="text-sm text-studio-gold hover:text-studio-black transition-colors font-mono tracking-wider"
                   >
-                    SEND INQUIRY
+                    SEND ANOTHER MESSAGE
                   </button>
                 </div>
-              </form>
+              ) : (
+                <form 
+                  className="bg-white p-8 md:p-10 shadow-lg"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setFormStatus('submitting');
+                    setTimeout(() => setFormStatus('success'), 1200);
+                  }}
+                >
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block font-mono text-xs tracking-wider text-studio-black/50 mb-2">
+                        NAME
+                      </label>
+                      <input 
+                        type="text" 
+                        placeholder="Your name"
+                        required
+                        className="w-full bg-studio-cream/50 border border-studio-black/10 px-4 py-3 text-studio-black placeholder:text-studio-black/30 focus:outline-none focus:border-studio-gold transition-colors"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block font-mono text-xs tracking-wider text-studio-black/50 mb-2">
+                        EMAIL
+                      </label>
+                      <input 
+                        type="email" 
+                        placeholder="your@email.com"
+                        required
+                        className="w-full bg-studio-cream/50 border border-studio-black/10 px-4 py-3 text-studio-black placeholder:text-studio-black/30 focus:outline-none focus:border-studio-gold transition-colors"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block font-mono text-xs tracking-wider text-studio-black/50 mb-2">
+                        INTEREST
+                      </label>
+                      <select 
+                        required
+                        className="w-full bg-studio-cream/50 border border-studio-black/10 px-4 py-3 text-studio-black focus:outline-none focus:border-studio-gold transition-colors"
+                      >
+                        <option value="">Select an option</option>
+                        <option value="purchase">Purchase Artwork</option>
+                        <option value="commission">Commission a Piece</option>
+                        <option value="event">RSVP for Spring Showcase</option>
+                        <option value="visit">Schedule a Visit</option>
+                        <option value="other">Other Inquiry</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block font-mono text-xs tracking-wider text-studio-black/50 mb-2">
+                        MESSAGE
+                      </label>
+                      <textarea 
+                        rows={4}
+                        placeholder="Tell us about your project or inquiry..."
+                        required
+                        className="w-full bg-studio-cream/50 border border-studio-black/10 px-4 py-3 text-studio-black placeholder:text-studio-black/30 resize-none focus:outline-none focus:border-studio-gold transition-colors"
+                      />
+                    </div>
+                    
+                    <button 
+                      type="submit"
+                      disabled={formStatus === 'submitting'}
+                      className="w-full bg-studio-black text-studio-white py-4 font-display font-semibold tracking-wide hover:bg-studio-gold hover:text-studio-black transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {formStatus === 'submitting' ? 'SENDING...' : 'SEND INQUIRY'}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         </div>
       </section>
+
+      {/* Gallery Lightbox */}
+      {galleryLightboxIndex !== null && (
+        <div className="fixed inset-0 z-[100] bg-studio-black/95 backdrop-blur-md flex items-center justify-center">
+          <div className="absolute inset-0" onClick={() => setGalleryLightboxIndex(null)} />
+          <button
+            onClick={() => setGalleryLightboxIndex(null)}
+            className="absolute top-5 right-5 z-10 w-12 h-12 flex items-center justify-center bg-studio-white/10 hover:bg-studio-gold text-studio-white hover:text-studio-black transition-colors rounded-full"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          {galleryLightboxIndex > 0 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setGalleryLightboxIndex(galleryLightboxIndex - 1); }}
+              className="absolute left-4 md:left-8 z-10 w-12 h-12 flex items-center justify-center bg-studio-white/10 hover:bg-studio-gold text-studio-white hover:text-studio-black transition-colors rounded-full"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+          )}
+          {galleryLightboxIndex < 8 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setGalleryLightboxIndex(galleryLightboxIndex + 1); }}
+              className="absolute right-4 md:right-8 z-10 w-12 h-12 flex items-center justify-center bg-studio-white/10 hover:bg-studio-gold text-studio-white hover:text-studio-black transition-colors rounded-full"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          )}
+          <FadeImage
+            src={`/images/gallery-${galleryLightboxIndex + 1}.jpg`}
+            alt={`Studio interior ${galleryLightboxIndex + 1}`}
+            className="relative z-10 max-w-[90vw] max-h-[85vh] object-contain shadow-2xl"
+          />
+        </div>
+      )}
+
+      {/* Back to Top */}
+      {showBackToTop && (
+        <button
+          onClick={() => scrollToSection('artists')}
+          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-studio-gold text-studio-black flex items-center justify-center shadow-lg hover:bg-studio-white transition-colors animate-fade-in"
+          aria-label="Back to top"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
 
       {/* Footer */}
       <footer className="relative z-50 bg-studio-black py-12 px-6 md:px-14 lg:px-20 border-t border-studio-white/10">

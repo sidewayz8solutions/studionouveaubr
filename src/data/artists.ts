@@ -106,6 +106,16 @@ export const artists: Artist[] = [
         width: 1148,
         height: 1200
       },
+      {
+        id: 10,
+        title: 'Whale',
+        image: '/images/debbie-whale.jpg',
+        price: 888,
+        size: '24 x 24"',
+        medium: 'Mixed Media',
+        width: 1245,
+        height: 1248
+      },
     ]
   },
   {
