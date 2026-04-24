@@ -795,6 +795,14 @@ function App() {
     }).format(price);
   };
 
+  const getInquiryLink = (artwork: { title: string; price: number; size: string; medium: string }, artistName: string) => {
+    const subject = encodeURIComponent(`Inquiry: ${artwork.title} by ${artistName}`);
+    const body = encodeURIComponent(
+      `Hello Studio Nouveau,\n\nI am interested in purchasing "${artwork.title}" by ${artistName}.\n\nPrice: ${formatPrice(artwork.price)}\nSize: ${artwork.size}\nMedium: ${artwork.medium}\n\nPlease contact me with next steps to complete this purchase.\n\nThank you.`
+    );
+    return `mailto:hello@studionouveaubr.com?subject=${subject}&body=${body}`;
+  };
+
   return (
     <div className="relative">
       {/* Page Loader */}
@@ -1054,15 +1062,13 @@ function App() {
                                 <h3 className="artwork-title">{artwork.title}</h3>
                                 <p className="artwork-details">{artwork.medium} &middot; {artwork.size}</p>
                                 <p className="font-mono text-sm text-studio-gold mb-3">{formatPrice(artwork.price)}</p>
-                                <button 
+                                <a
+                                  href={getInquiryLink(artwork, artist.name)}
                                   className="inquire-btn pointer-events-auto"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    scrollToSection('contact');
-                                  }}
+                                  onClick={(e) => e.stopPropagation()}
                                 >
                                   Inquire
-                                </button>
+                                </a>
                               </div>
                             </div>
                           </div>
@@ -1095,8 +1101,9 @@ function App() {
           hasNext={lightboxIndex < allArtworks.length - 1}
           hasPrev={lightboxIndex > 0}
           onInquire={() => {
-            setLightboxIndex(null);
-            setTimeout(() => scrollToSection('contact'), 100);
+            if (currentLightboxArtwork) {
+              window.location.href = getInquiryLink(currentLightboxArtwork, currentLightboxArtwork.artistName);
+            }
           }}
         />
       )}
@@ -1184,7 +1191,7 @@ function App() {
           </div>
           <div className="gallery-photos-grid">
             {[1,2,3,4,5,6,7,8,9].map((n) => (
-              <FadeImage
+              <img
                 key={n}
                 src={`/images/gallery-${n}.jpg`}
                 alt={`Studio interior ${n}`}
