@@ -423,9 +423,9 @@ export const artists: Artist[] = [
     ]
   },
   {
-    name: 'Guest Artist',
-    specialty: 'TBD',
-    bio: 'We are honored to feature rotating guest artists at Studio Nouveau. Please visit us in person to view their latest works and learn more about their creative journey.',
+    name: 'Katie Lovett',
+    specialty: 'Contemporary Wildlife & Nature',
+    bio: 'Katie captures the spirit of the natural world through bold contemporary compositions. Her wildlife portraits and nature scenes blend vivid color with expressive brushwork, bringing animals and landscapes to life with striking emotional depth.',
     artworks: []
   },
 ];
