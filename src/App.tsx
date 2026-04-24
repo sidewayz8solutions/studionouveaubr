@@ -424,7 +424,7 @@ function ParallaxSign() {
           ))}
           
           <div className="mt-8 font-mono text-xs tracking-[0.35em] text-studio-gray/50 uppercase">
-            Baton Rouge • Est. 2024
+            Baton Rouge • Est. 2025
           </div>
         </div>
       </div>
@@ -446,7 +446,6 @@ function App() {
   const currentLightboxArtwork = lightboxIndex !== null ? allArtworks[lightboxIndex] : null;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
-  const [selectedMedium, setSelectedMedium] = useState<string>('All');
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [galleryLightboxIndex, setGalleryLightboxIndex] = useState<number | null>(null);
@@ -454,9 +453,6 @@ function App() {
   const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
   const lenisRef = useRef<Lenis | null>(null);
   const galleryMaxDim = useResponsiveMaxDim(400);
-
-  // Get all unique mediums
-  const allMediums = ['All', ...Array.from(new Set(allArtworks.map(a => a.medium))).sort()];
 
   // Page loader
   useEffect(() => {
@@ -974,32 +970,9 @@ function App() {
 
       <ParallaxSign />
 
-      {/* Medium Filter */}
-      <div className="sticky top-[72px] z-30 bg-studio-black/90 backdrop-blur-md border-b border-studio-white/5">
-        <div className="max-w-7xl mx-auto px-6 md:px-14 lg:px-20 py-3">
-          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
-            <span className="font-mono text-xs tracking-wider text-studio-gray/60 whitespace-nowrap">FILTER:</span>
-            {allMediums.map((medium) => (
-              <button
-                key={medium}
-                onClick={() => setSelectedMedium(medium)}
-                className={`px-3 py-1.5 rounded-full text-xs font-mono tracking-wider whitespace-nowrap transition-colors ${
-                  selectedMedium === medium
-                    ? 'bg-studio-gold text-studio-black'
-                    : 'bg-studio-white/5 text-studio-gray hover:bg-studio-white/10 hover:text-studio-white'
-                }`}
-              >
-                {medium}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Artist Sections */}
       <div id="artists" className="relative z-20">
         {artists.map((artist, artistIndex) => {
-          const filteredArtworks = selectedMedium === 'All' ? artist.artworks : artist.artworks.filter(a => a.medium === selectedMedium);
           return (
           <section 
             key={artist.name} 
@@ -1028,9 +1001,9 @@ function App() {
             {/* Gallery Grid - Modern Museum Style */}
             <div className="gallery-container">
               <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 py-12 md:py-16">
-                {filteredArtworks.length > 0 ? (
+                {artist.artworks.length > 0 ? (
                   <div className="gallery-grid perspective-container">
-                    {filteredArtworks.map((artwork) => {
+                    {artist.artworks.map((artwork) => {
                       const dims = getDisplaySize(artwork.width, artwork.height, galleryMaxDim);
                       return (
                         <TiltCard key={artwork.id} className="artwork-card velocity-skew">
