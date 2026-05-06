@@ -1213,9 +1213,9 @@ function App() {
                     <Mail className="w-4 h-4 text-studio-gold" />
                   </div>
                   <div>
-                    <div className="font-mono text-xs tracking-wider text-studio-black/50 mb-1">EMAIL</div>
+                    <div className="font-mono text-xs tracking-wider text-studio-black/50 mb-1"></div>
                     <a href="mailto:hello@studionouveaubr.com" className="text-studio-black hover:text-studio-gold transition-colors">
-                      hello@studionouveaubr.com
+                    
                     </a>
                   </div>
                 </div>
@@ -1237,9 +1237,9 @@ function App() {
                     <Calendar className="w-4 h-4 text-studio-gold" />
                   </div>
                   <div>
-                    <div className="font-mono text-xs tracking-wider text-studio-black/50 mb-1">VISITING HOURS</div>
+                    <div className="font-mono text-xs tracking-wider text-studio-black/50 mb-1"></div>
                     <p className="text-studio-black">
-                      Tuesday - Saturday, 10am - 5pm
+                
                     </p>
                   </div>
                 </div>
